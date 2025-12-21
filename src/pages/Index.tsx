@@ -25,8 +25,12 @@ const Index = () => {
       ) : (
         <ScrollArea className="flex-1" ref={scrollRef}>
           <div className="p-6 space-y-6 max-w-4xl mx-auto">
-            {messages.map((message) => (
-              <ChatMessage key={message.id} message={message} />
+            {messages.map((message, index) => (
+              <ChatMessage 
+                key={message.id} 
+                message={message} 
+                isLatest={index === messages.length - 1}
+              />
             ))}
           </div>
         </ScrollArea>

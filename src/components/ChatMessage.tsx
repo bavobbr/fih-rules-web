@@ -1,22 +1,46 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChatMessage as ChatMessageType } from "@/types/chat";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { User, Bot, ChevronDown, ChevronUp, FileText, Loader2 } from "lucide-react";
+import { User, Bot, ChevronDown, ChevronUp, FileText } from "lucide-react";
+import { TypingIndicator } from "./TypingIndicator";
+import { useTypewriter } from "@/hooks/useTypewriter";
 
 interface ChatMessageProps {
   message: ChatMessageType;
+  isLatest?: boolean;
 }
 
-export function ChatMessage({ message }: ChatMessageProps) {
+export function ChatMessage({ message, isLatest = false }: ChatMessageProps) {
   const [isSourcesOpen, setIsSourcesOpen] = useState(false);
+  const [hasFinishedTyping, setHasFinishedTyping] = useState(!isLatest);
   const isUser = message.role === "user";
+
+  // Only animate the latest assistant message that just arrived
+  const shouldAnimate = !isUser && isLatest && !message.isLoading && !hasFinishedTyping;
+
+  const { displayedText, isTyping } = useTypewriter({
+    text: message.content,
+    speed: 12,
+    enabled: shouldAnimate,
+    onComplete: () => setHasFinishedTyping(true),
+  });
+
+  // Reset typing state when a new message comes in
+  useEffect(() => {
+    if (isLatest && !message.isLoading) {
+      setHasFinishedTyping(false);
+    }
+  }, [message.id]);
+
+  const textToShow = shouldAnimate ? displayedText : message.content;
+  const showCursor = isTyping && shouldAnimate;
 
   return (
     <div
-      className={`flex gap-3 ${isUser ? "flex-row-reverse" : "flex-row"}`}
+      className={`flex gap-3 animate-fade-in ${isUser ? "flex-row-reverse" : "flex-row"}`}
     >
       <div
         className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${
@@ -35,17 +59,19 @@ export function ChatMessage({ message }: ChatMessageProps) {
           }`}
         >
           {message.isLoading ? (
-            <div className="flex items-center gap-2">
-              <Loader2 className="w-4 h-4 animate-spin" />
-              <span>Thinking...</span>
-            </div>
+            <TypingIndicator />
           ) : (
-            <p className="whitespace-pre-wrap">{message.content}</p>
+            <p className="whitespace-pre-wrap">
+              {textToShow}
+              {showCursor && (
+                <span className="inline-block w-0.5 h-5 bg-current ml-0.5 animate-[pulse_1s_ease-in-out_infinite]" />
+              )}
+            </p>
           )}
         </Card>
 
-        {!isUser && !message.isLoading && (message.variant || message.source_docs?.length) && (
-          <div className="flex flex-wrap items-center gap-2">
+        {!isUser && !message.isLoading && hasFinishedTyping && (message.variant || message.source_docs?.length) && (
+          <div className="flex flex-wrap items-center gap-2 animate-fade-in">
             {message.variant && (
               <Badge variant="secondary" className="capitalize">
                 {message.variant}
