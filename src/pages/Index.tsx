@@ -39,26 +39,30 @@ const Index = () => {
           onDeleteConversation={deleteConversation}
           onNewChat={startNewChat}
         />
-        <div className="flex flex-col flex-1 h-screen">
+        <div className="flex flex-col flex-1 h-screen overflow-hidden">
           <ChatHeader onNewChat={clearChat} isHealthy={isHealthy} />
           
-          {messages.length === 0 ? (
-            <WelcomeScreen onExampleClick={sendMessage} />
-          ) : (
-            <ScrollArea className="flex-1" ref={scrollRef}>
-              <div className="p-6 space-y-6 max-w-4xl mx-auto">
-                {messages.map((message, index) => (
-                  <ChatMessage 
-                    key={message.id} 
-                    message={message} 
-                    isLatest={index === messages.length - 1}
-                  />
-                ))}
-              </div>
-            </ScrollArea>
-          )}
+          <div className="flex-1 overflow-hidden">
+            {messages.length === 0 ? (
+              <WelcomeScreen onExampleClick={sendMessage} />
+            ) : (
+              <ScrollArea className="h-full" ref={scrollRef}>
+                <div className="p-4 md:p-6 space-y-6 max-w-4xl mx-auto pb-4">
+                  {messages.map((message, index) => (
+                    <ChatMessage 
+                      key={message.id} 
+                      message={message} 
+                      isLatest={index === messages.length - 1}
+                    />
+                  ))}
+                </div>
+              </ScrollArea>
+            )}
+          </div>
           
-          <ChatInput onSend={sendMessage} disabled={isLoading} />
+          <div className="shrink-0">
+            <ChatInput onSend={sendMessage} disabled={isLoading} />
+          </div>
         </div>
       </div>
     </SidebarProvider>
