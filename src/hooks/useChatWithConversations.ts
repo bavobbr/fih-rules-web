@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { ChatMessage, Message } from "@/types/chat";
 import { sendChatMessage, checkHealth } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
@@ -20,23 +20,37 @@ export function useChatWithConversations() {
   const [isLoading, setIsLoading] = useState(false);
   const [isHealthy, setIsHealthy] = useState<boolean | null>(null);
   const { toast } = useToast();
+  
+  // Track if we're in the middle of sending a message to prevent sync issues
+  const isSendingRef = useRef(false);
+  const prevConversationIdRef = useRef<string | null>(null);
 
   // Check health on mount
   useEffect(() => {
     checkHealth().then(setIsHealthy);
   }, []);
 
-  // Sync messages with active conversation
+  // Sync messages with active conversation when switching conversations
   useEffect(() => {
-    if (activeConversation) {
-      setMessages(activeConversation.messages);
-    } else {
-      setMessages([]);
+    // Don't sync if we're in the middle of sending a message
+    if (isSendingRef.current) return;
+    
+    // Only sync when the conversation ID actually changes
+    if (prevConversationIdRef.current !== activeConversationId) {
+      prevConversationIdRef.current = activeConversationId;
+      
+      if (activeConversation) {
+        setMessages(activeConversation.messages);
+      } else {
+        setMessages([]);
+      }
     }
-  }, [activeConversation]);
+  }, [activeConversationId, activeConversation]);
 
   const sendMessage = useCallback(
     async (query: string) => {
+      isSendingRef.current = true;
+      
       const userMessage: ChatMessage = {
         id: crypto.randomUUID(),
         role: "user",
@@ -54,25 +68,29 @@ export function useChatWithConversations() {
 
       // If no active conversation, create one with the first message
       let currentConversationId = activeConversationId;
+      let newMessages: ChatMessage[];
+      
       if (!currentConversationId) {
         const newConversation = createConversation(userMessage);
         currentConversationId = newConversation.id;
-        setMessages([userMessage, loadingMessage]);
+        prevConversationIdRef.current = currentConversationId;
+        newMessages = [userMessage, loadingMessage];
       } else {
-        setMessages(prev => [...prev, userMessage, loadingMessage]);
+        newMessages = [...messages, userMessage, loadingMessage];
       }
-
+      
+      setMessages(newMessages);
       setIsLoading(true);
 
       try {
-        // Build history from previous messages (excluding the loading message)
-        const currentMessages = activeConversation?.messages || [];
-        const history: Message[] = [...currentMessages, userMessage].map(msg => ({
+        // Build history from messages (excluding loading message)
+        const historyMessages = newMessages.filter(msg => !msg.isLoading && msg.id !== userMessage.id);
+        const history: Message[] = historyMessages.map(msg => ({
           role: msg.role,
           content: msg.content,
         }));
 
-        const response = await sendChatMessage(query, history.slice(0, -1)); // Exclude the current user message from history
+        const response = await sendChatMessage(query, history);
 
         const assistantMessage: ChatMessage = {
           id: loadingMessage.id,
@@ -84,16 +102,12 @@ export function useChatWithConversations() {
           source_docs: response.source_docs,
         };
 
-        setMessages(prev => {
-          const updatedMessages = prev.map(msg =>
-            msg.id === loadingMessage.id ? assistantMessage : msg
-          );
-          // Update the conversation with new messages
-          if (currentConversationId) {
-            updateConversation(currentConversationId, updatedMessages);
-          }
-          return updatedMessages;
-        });
+        const updatedMessages = newMessages.map(msg =>
+          msg.id === loadingMessage.id ? assistantMessage : msg
+        );
+        
+        setMessages(updatedMessages);
+        updateConversation(currentConversationId, updatedMessages);
       } catch (error) {
         console.error("Chat error:", error);
         toast({
@@ -101,23 +115,23 @@ export function useChatWithConversations() {
           description: "Failed to get a response. Please try again.",
           variant: "destructive",
         });
-        setMessages(prev => {
-          const filteredMessages = prev.filter(msg => msg.id !== loadingMessage.id);
-          if (currentConversationId) {
-            updateConversation(currentConversationId, filteredMessages);
-          }
-          return filteredMessages;
-        });
+        const filteredMessages = newMessages.filter(msg => msg.id !== loadingMessage.id);
+        setMessages(filteredMessages);
+        if (currentConversationId) {
+          updateConversation(currentConversationId, filteredMessages);
+        }
       } finally {
         setIsLoading(false);
+        isSendingRef.current = false;
       }
     },
-    [activeConversationId, activeConversation, createConversation, updateConversation, toast]
+    [activeConversationId, messages, createConversation, updateConversation, toast]
   );
 
   const clearChat = useCallback(() => {
     startNewChat();
     setMessages([]);
+    prevConversationIdRef.current = null;
   }, [startNewChat]);
 
   return {
