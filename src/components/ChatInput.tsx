@@ -1,7 +1,10 @@
-import { useState, KeyboardEvent } from "react";
+import { useState, KeyboardEvent, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Send } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Send, Mic, MicOff } from "lucide-react";
+import { useVoiceInput } from "@/hooks/useVoiceInput";
+import { useToast } from "@/hooks/use-toast";
 
 interface ChatInputProps {
   onSend: (message: string) => void;
@@ -10,6 +13,31 @@ interface ChatInputProps {
 
 export function ChatInput({ onSend, disabled }: ChatInputProps) {
   const [input, setInput] = useState("");
+  const { toast } = useToast();
+
+  const { isListening, isSupported, transcript, toggleListening } = useVoiceInput({
+    onTranscript: (text) => {
+      setInput((prev) => (prev ? `${prev} ${text}` : text));
+    },
+    onError: (error) => {
+      toast({
+        title: "Voice input error",
+        description: error,
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Update input with interim transcript while listening
+  useEffect(() => {
+    if (isListening && transcript) {
+      setInput((prev) => {
+        // If we already have text, append the transcript
+        const baseText = prev.replace(/\s*\[.*?\]\s*$/, ""); // Remove any previous interim marker
+        return baseText ? `${baseText} ${transcript}` : transcript;
+      });
+    }
+  }, [transcript, isListening]);
 
   const handleSend = () => {
     const trimmed = input.trim();
@@ -26,6 +54,18 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
     }
   };
 
+  const handleVoiceClick = () => {
+    if (!isSupported) {
+      toast({
+        title: "Voice input not supported",
+        description: "Your browser doesn't support voice input. Try Chrome, Edge, or Safari.",
+        variant: "destructive",
+      });
+      return;
+    }
+    toggleListening();
+  };
+
   return (
     <div className="flex gap-3 p-4 border-t border-border bg-card">
       <Textarea
@@ -37,6 +77,22 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
         className="min-h-[52px] max-h-[200px] resize-none"
         rows={1}
       />
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            onClick={handleVoiceClick}
+            disabled={disabled}
+            variant={isListening ? "destructive" : "outline"}
+            size="icon"
+            className={`shrink-0 h-[52px] w-[52px] ${isListening ? "animate-pulse" : ""}`}
+          >
+            {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>
+          {isListening ? "Stop recording" : isSupported ? "Voice input" : "Voice not supported"}
+        </TooltipContent>
+      </Tooltip>
       <Button
         onClick={handleSend}
         disabled={disabled || !input.trim()}
