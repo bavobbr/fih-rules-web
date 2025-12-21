@@ -40,6 +40,7 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
       <Button
         onClick={handleSend}
         disabled={disabled || !input.trim()}
+        variant="gradient"
         size="icon"
         className="shrink-0 h-[52px] w-[52px]"
       >

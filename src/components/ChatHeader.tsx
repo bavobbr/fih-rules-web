@@ -17,30 +17,30 @@ export function ChatHeader({ onNewChat, isHealthy }: ChatHeaderProps) {
   };
 
   return (
-    <header className="flex items-center justify-between px-4 py-4 border-b border-border bg-card">
+    <header className="flex items-center justify-between px-4 py-4 [background:var(--gradient-header)] text-white shadow-lg">
       <div className="flex items-center gap-3">
-        <SidebarTrigger className="mr-2" />
-        <h1 className="text-xl font-bold text-foreground">FIH Rules AI</h1>
-        <Badge variant="secondary" className="flex items-center gap-1.5">
+        <SidebarTrigger className="mr-2 text-white/90 hover:text-white hover:bg-white/10" />
+        <h1 className="text-xl font-bold">FIH Rules AI</h1>
+        <Badge variant="secondary" className="flex items-center gap-1.5 bg-white/20 text-white border-white/30">
           <Circle
             className={`w-2 h-2 ${
               isHealthy === null
-                ? "fill-muted-foreground text-muted-foreground"
+                ? "fill-white/50 text-white/50"
                 : isHealthy
-                ? "fill-green-500 text-green-500"
-                : "fill-destructive text-destructive"
+                ? "fill-green-400 text-green-400"
+                : "fill-red-400 text-red-400"
             }`}
           />
           {isHealthy === null ? "Checking..." : isHealthy ? "Online" : "Offline"}
         </Badge>
       </div>
       <div className="flex items-center gap-2">
-        <Button variant="ghost" size="icon" onClick={toggleTheme} className="h-9 w-9">
+        <Button variant="ghost" size="icon" onClick={toggleTheme} className="h-9 w-9 text-white/90 hover:text-white hover:bg-white/10">
           <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
           <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
           <span className="sr-only">Toggle theme</span>
         </Button>
-        <Button variant="ghost" size="sm" onClick={onNewChat} className="gap-2">
+        <Button variant="ghost" size="sm" onClick={onNewChat} className="gap-2 text-white/90 hover:text-white hover:bg-white/10">
           <RotateCcw className="w-4 h-4" />
           New Chat
         </Button>
