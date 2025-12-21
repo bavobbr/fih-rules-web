@@ -86,13 +86,6 @@ export function WelcomeScreen({ onExampleClick }: WelcomeScreenProps) {
                 {question}
               </button>
             ))}
-            {/* Show 4th question only on desktop */}
-            <button
-              onClick={() => onExampleClick(exampleQuestions[3])}
-              className="hidden md:block px-4 py-2 text-sm bg-secondary text-secondary-foreground rounded-full hover:bg-secondary/80 transition-colors"
-            >
-              {exampleQuestions[3]}
-            </button>
           </div>
         </div>
       </div>
