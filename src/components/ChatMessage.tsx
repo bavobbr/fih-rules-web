@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { ChatMessage as ChatMessageType } from "@/types/chat";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,28 +15,26 @@ interface ChatMessageProps {
 
 export function ChatMessage({ message, isLatest = false }: ChatMessageProps) {
   const [isSourcesOpen, setIsSourcesOpen] = useState(false);
-  const [hasFinishedTyping, setHasFinishedTyping] = useState(!isLatest);
+  const [hasFinishedTyping, setHasFinishedTyping] = useState(false);
   const isUser = message.role === "user";
 
   // Only animate the latest assistant message that just arrived
-  const shouldAnimate = !isUser && isLatest && !message.isLoading && !hasFinishedTyping;
+  const shouldAnimate = !isUser && isLatest && !message.isLoading;
+
+  const handleComplete = useCallback(() => {
+    setHasFinishedTyping(true);
+  }, []);
 
   const { displayedText, isTyping } = useTypewriter({
     text: message.content,
     speed: 12,
     enabled: shouldAnimate,
-    onComplete: () => setHasFinishedTyping(true),
+    onComplete: handleComplete,
   });
-
-  // Reset typing state when a new message comes in
-  useEffect(() => {
-    if (isLatest && !message.isLoading) {
-      setHasFinishedTyping(false);
-    }
-  }, [message.id]);
 
   const textToShow = shouldAnimate ? displayedText : message.content;
   const showCursor = isTyping && shouldAnimate;
+  const showMetadata = !isUser && !message.isLoading && (hasFinishedTyping || !shouldAnimate) && (message.variant || message.source_docs?.length);
 
   return (
     <div
@@ -70,7 +68,7 @@ export function ChatMessage({ message, isLatest = false }: ChatMessageProps) {
           )}
         </Card>
 
-        {!isUser && !message.isLoading && hasFinishedTyping && (message.variant || message.source_docs?.length) && (
+        {showMetadata && (
           <div className="flex flex-wrap items-center gap-2 animate-fade-in">
             {message.variant && (
               <Badge variant="secondary" className="capitalize">
