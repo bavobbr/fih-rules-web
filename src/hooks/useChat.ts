@@ -3,8 +3,36 @@ import { ChatMessage, Message } from "@/types/chat";
 import { sendChatMessage, checkHealth } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 
+const STORAGE_KEY = "fih-rules-chat-history";
+
+function loadMessages(): ChatMessage[] {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      return parsed.map((msg: ChatMessage) => ({
+        ...msg,
+        timestamp: new Date(msg.timestamp),
+      }));
+    }
+  } catch (error) {
+    console.error("Failed to load chat history:", error);
+  }
+  return [];
+}
+
+function saveMessages(messages: ChatMessage[]) {
+  try {
+    // Don't save loading messages
+    const toSave = messages.filter((msg) => !msg.isLoading);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+  } catch (error) {
+    console.error("Failed to save chat history:", error);
+  }
+}
+
 export function useChat() {
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>(() => loadMessages());
   const [isLoading, setIsLoading] = useState(false);
   const [isHealthy, setIsHealthy] = useState<boolean | null>(null);
   const { toast } = useToast();
@@ -12,6 +40,11 @@ export function useChat() {
   useEffect(() => {
     checkHealth().then(setIsHealthy);
   }, []);
+
+  // Save to localStorage whenever messages change
+  useEffect(() => {
+    saveMessages(messages);
+  }, [messages]);
 
   const sendMessage = useCallback(
     async (query: string) => {
@@ -74,6 +107,7 @@ export function useChat() {
 
   const clearChat = useCallback(() => {
     setMessages([]);
+    localStorage.removeItem(STORAGE_KEY);
   }, []);
 
   return {
