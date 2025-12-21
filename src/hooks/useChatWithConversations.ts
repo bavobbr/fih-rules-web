@@ -90,7 +90,9 @@ export function useChatWithConversations() {
           content: msg.content,
         }));
 
+        const startTime = Date.now();
         const response = await sendChatMessage(query, history);
+        const responseTime = Date.now() - startTime;
 
         const assistantMessage: ChatMessage = {
           id: loadingMessage.id,
@@ -100,6 +102,7 @@ export function useChatWithConversations() {
           standalone_query: response.standalone_query,
           variant: response.variant,
           source_docs: response.source_docs,
+          responseTime,
         };
 
         const updatedMessages = newMessages.map(msg =>
