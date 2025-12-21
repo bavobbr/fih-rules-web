@@ -79,15 +79,17 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
       />
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button
-            onClick={handleVoiceClick}
-            disabled={disabled}
-            variant={isListening ? "destructive" : "outline"}
-            size="icon"
-            className={`shrink-0 h-[52px] w-[52px] ${isListening ? "animate-pulse" : ""}`}
-          >
-            {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
-          </Button>
+          <span>
+            <Button
+              onClick={handleVoiceClick}
+              disabled={disabled}
+              variant={isListening ? "destructive" : "outline"}
+              size="icon"
+              className={`shrink-0 h-[52px] w-[52px] ${isListening ? "animate-pulse" : ""}`}
+            >
+              {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
+            </Button>
+          </span>
         </TooltipTrigger>
         <TooltipContent>
           {isListening ? "Stop recording" : isSupported ? "Voice input" : "Voice not supported"}
