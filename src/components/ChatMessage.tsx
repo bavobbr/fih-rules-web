@@ -1,12 +1,11 @@
 import { useState, useCallback } from "react";
 import ReactMarkdown from "react-markdown";
 import { ChatMessage as ChatMessageType } from "@/types/chat";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { User, Bot, ChevronDown, ChevronUp, FileText, Copy, Check } from "lucide-react";
+import { User, Bot, Copy, Check } from "lucide-react";
 import { TypingIndicator } from "./TypingIndicator";
+import { DebugTrace } from "./DebugTrace";
 import { useTypewriter } from "@/hooks/useTypewriter";
 import { useToast } from "@/hooks/use-toast";
 
@@ -16,7 +15,6 @@ interface ChatMessageProps {
 }
 
 export function ChatMessage({ message, isLatest = false }: ChatMessageProps) {
-  const [isSourcesOpen, setIsSourcesOpen] = useState(false);
   const [hasFinishedTyping, setHasFinishedTyping] = useState(false);
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
@@ -54,7 +52,7 @@ export function ChatMessage({ message, isLatest = false }: ChatMessageProps) {
 
   const textToShow = shouldAnimate ? displayedText : message.content;
   const showCursor = isTyping && shouldAnimate;
-  const showMetadata = !isUser && !message.isLoading && (hasFinishedTyping || !shouldAnimate) && (message.variant || message.source_docs?.length);
+  const showDebugTrace = !isUser && !message.isLoading && (hasFinishedTyping || !shouldAnimate);
   const showCopyButton = !isUser && !message.isLoading && message.content;
 
   return (
@@ -108,59 +106,7 @@ export function ChatMessage({ message, isLatest = false }: ChatMessageProps) {
           )}
         </div>
 
-        {showMetadata && (
-          <div className="flex flex-wrap items-center gap-2 animate-fade-in">
-            {message.variant && (
-              <Badge variant="secondary" className="capitalize">
-                {message.variant}
-              </Badge>
-            )}
-
-            {message.source_docs && message.source_docs.length > 0 && (
-              <Collapsible open={isSourcesOpen} onOpenChange={setIsSourcesOpen}>
-                <CollapsibleTrigger asChild>
-                  <Button variant="ghost" size="sm" className="h-7 gap-1 text-muted-foreground">
-                    <FileText className="w-3 h-3" />
-                    {message.source_docs.length} source{message.source_docs.length !== 1 ? "s" : ""}
-                    {isSourcesOpen ? (
-                      <ChevronUp className="w-3 h-3" />
-                    ) : (
-                      <ChevronDown className="w-3 h-3" />
-                    )}
-                  </Button>
-                </CollapsibleTrigger>
-                <CollapsibleContent className="mt-2">
-                  <div className="space-y-2">
-                    {message.source_docs.map((doc, index) => (
-                      <Card key={index} className="p-3 bg-muted/50">
-                        <div className="flex flex-wrap gap-2 mb-2">
-                          {doc.metadata.variant && (
-                            <Badge variant="outline" className="text-xs">
-                              {String(doc.metadata.variant)}
-                            </Badge>
-                          )}
-                          {doc.metadata.page && (
-                            <Badge variant="outline" className="text-xs">
-                              Page {String(doc.metadata.page)}
-                            </Badge>
-                          )}
-                          {doc.metadata.rule_number && (
-                            <Badge variant="outline" className="text-xs">
-                              Rule {String(doc.metadata.rule_number)}
-                            </Badge>
-                          )}
-                        </div>
-                        <p className="text-sm text-muted-foreground line-clamp-3">
-                          {doc.page_content}
-                        </p>
-                      </Card>
-                    ))}
-                  </div>
-                </CollapsibleContent>
-              </Collapsible>
-            )}
-          </div>
-        )}
+        {showDebugTrace && <DebugTrace message={message} />}
       </div>
     </div>
   );

@@ -3,9 +3,22 @@ export interface Message {
   content: string;
 }
 
+export interface SourceDocMetadata {
+  page?: number;
+  source?: string;
+  chapter?: string;
+  heading?: string;
+  section?: string;
+  summary?: string;
+  variant?: string;
+  source_file?: string;
+  rule_number?: string;
+  [key: string]: unknown;
+}
+
 export interface SourceDoc {
   page_content: string;
-  metadata: Record<string, unknown>;
+  metadata: SourceDocMetadata;
 }
 
 export interface ChatRequest {
@@ -27,6 +40,7 @@ export interface ChatMessage extends Message {
   variant?: string;
   source_docs?: SourceDoc[];
   isLoading?: boolean;
+  responseTime?: number; // in milliseconds
 }
 
 export interface Conversation {
