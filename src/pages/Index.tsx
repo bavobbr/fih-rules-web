@@ -31,7 +31,7 @@ const Index = () => {
 
   return (
     <SidebarProvider defaultOpen={false}>
-      <div className="flex min-h-screen w-full">
+      <div className="flex min-h-[100dvh] w-full">
         <ChatSidebar
           conversations={conversations}
           activeConversationId={activeConversationId}
@@ -39,7 +39,7 @@ const Index = () => {
           onDeleteConversation={deleteConversation}
           onNewChat={startNewChat}
         />
-        <div className="flex flex-col flex-1 h-screen overflow-hidden">
+        <div className="flex flex-col flex-1 h-[100dvh] overflow-hidden">
           <ChatHeader onNewChat={clearChat} isHealthy={isHealthy} />
           
           <div className="flex-1 overflow-hidden">
