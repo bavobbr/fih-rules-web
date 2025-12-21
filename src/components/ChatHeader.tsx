@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { RotateCcw, Circle, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 interface ChatHeaderProps {
   onNewChat: () => void;
@@ -16,8 +17,9 @@ export function ChatHeader({ onNewChat, isHealthy }: ChatHeaderProps) {
   };
 
   return (
-    <header className="flex items-center justify-between px-6 py-4 border-b border-border bg-card">
+    <header className="flex items-center justify-between px-4 py-4 border-b border-border bg-card">
       <div className="flex items-center gap-3">
+        <SidebarTrigger className="mr-2" />
         <h1 className="text-xl font-bold text-foreground">FIH Rules AI</h1>
         <Badge variant="secondary" className="flex items-center gap-1.5">
           <Circle
