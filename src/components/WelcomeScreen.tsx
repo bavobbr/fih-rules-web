@@ -38,28 +38,30 @@ const features = [
 
 export function WelcomeScreen({ onExampleClick }: WelcomeScreenProps) {
   return (
-    <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
-      <div className="max-w-2xl space-y-8">
-        <div className="space-y-4">
+    <div className="flex-1 flex flex-col items-center justify-start md:justify-center p-4 md:p-6 text-center overflow-y-auto">
+      <div className="max-w-2xl space-y-4 md:space-y-8">
+        {/* Compact header on mobile */}
+        <div className="space-y-2 md:space-y-4">
           <div className="flex items-center justify-center gap-3">
-            <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center">
-              <MessageCircleQuestion className="w-8 h-8 text-primary-foreground" />
+            <div className="w-10 h-10 md:w-16 md:h-16 rounded-full bg-primary flex items-center justify-center">
+              <MessageCircleQuestion className="w-5 h-5 md:w-8 md:h-8 text-primary-foreground" />
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-foreground">
+          <h1 className="text-xl md:text-3xl font-bold text-foreground">
             FIH Rules AI Agent
           </h1>
-          <p className="text-muted-foreground text-lg">
+          <p className="text-muted-foreground text-sm md:text-lg">
             Your Digital Umpire's Assistant for instant, expert-level clarity on International Hockey Federation rules.
           </p>
           <div className="flex justify-center gap-2">
-            <Badge variant="secondary">Outdoor</Badge>
-            <Badge variant="secondary">Indoor</Badge>
-            <Badge variant="secondary">Hockey5s</Badge>
+            <Badge variant="secondary" className="text-xs md:text-sm">Outdoor</Badge>
+            <Badge variant="secondary" className="text-xs md:text-sm">Indoor</Badge>
+            <Badge variant="secondary" className="text-xs md:text-sm">Hockey5s</Badge>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Hide features on mobile to save space */}
+        <div className="hidden md:grid grid-cols-1 md:grid-cols-3 gap-4">
           {features.map((feature) => (
             <Card key={feature.title} className="p-4 bg-card">
               <feature.icon className="w-8 h-8 mx-auto mb-3 text-primary" />
@@ -71,18 +73,26 @@ export function WelcomeScreen({ onExampleClick }: WelcomeScreenProps) {
           ))}
         </div>
 
-        <div className="space-y-3">
-          <p className="text-sm font-medium text-foreground">Try asking:</p>
-          <div className="flex flex-wrap justify-center gap-2">
-            {exampleQuestions.map((question) => (
+        {/* Example questions - more compact on mobile */}
+        <div className="space-y-2 md:space-y-3">
+          <p className="text-xs md:text-sm font-medium text-foreground">Try asking:</p>
+          <div className="flex flex-wrap justify-center gap-1.5 md:gap-2">
+            {exampleQuestions.slice(0, 3).map((question) => (
               <button
                 key={question}
                 onClick={() => onExampleClick(question)}
-                className="px-4 py-2 text-sm bg-secondary text-secondary-foreground rounded-full hover:bg-secondary/80 transition-colors"
+                className="px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm bg-secondary text-secondary-foreground rounded-full hover:bg-secondary/80 transition-colors"
               >
                 {question}
               </button>
             ))}
+            {/* Show 4th question only on desktop */}
+            <button
+              onClick={() => onExampleClick(exampleQuestions[3])}
+              className="hidden md:block px-4 py-2 text-sm bg-secondary text-secondary-foreground rounded-full hover:bg-secondary/80 transition-colors"
+            >
+              {exampleQuestions[3]}
+            </button>
           </div>
         </div>
       </div>
