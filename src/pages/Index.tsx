@@ -30,7 +30,7 @@ const Index = () => {
   }, [messages]);
 
   return (
-    <SidebarProvider>
+    <SidebarProvider defaultOpen={false}>
       <div className="flex min-h-screen w-full">
         <ChatSidebar
           conversations={conversations}
