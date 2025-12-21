@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import ReactMarkdown from "react-markdown";
 import { ChatMessage as ChatMessageType } from "@/types/chat";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -58,13 +59,15 @@ export function ChatMessage({ message, isLatest = false }: ChatMessageProps) {
         >
           {message.isLoading ? (
             <TypingIndicator />
+          ) : isUser ? (
+            <p className="whitespace-pre-wrap">{textToShow}</p>
           ) : (
-            <p className="whitespace-pre-wrap">
-              {textToShow}
+            <div className="prose prose-sm dark:prose-invert max-w-none prose-p:my-1 prose-ul:my-1 prose-ol:my-1 prose-li:my-0 prose-headings:my-2 prose-headings:font-semibold">
+              <ReactMarkdown>{textToShow}</ReactMarkdown>
               {showCursor && (
                 <span className="inline-block w-0.5 h-5 bg-current ml-0.5 animate-[pulse_1s_ease-in-out_infinite]" />
               )}
-            </p>
+            </div>
           )}
         </Card>
 
