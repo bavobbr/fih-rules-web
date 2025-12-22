@@ -18,7 +18,7 @@ export function SourceCard({ doc, index }: SourceCardProps) {
   const hasExpandableContent = doc.page_content.length > 200;
 
   return (
-    <Card className="p-3 bg-muted/50 border-border/50">
+    <Card className="p-3 bg-background border-border">
       {/* Header with chapter + heading */}
       <div className="flex items-start gap-2 mb-2">
         <BookOpen className="w-4 h-4 text-primary mt-0.5 shrink-0" />
@@ -70,7 +70,7 @@ export function SourceCard({ doc, index }: SourceCardProps) {
 
       {/* Content with expand/collapse */}
       <div className="relative">
-        <p className={`text-sm text-muted-foreground ${isExpanded ? "" : "line-clamp-3"}`}>
+        <p className={`text-sm text-foreground/80 ${isExpanded ? "" : "line-clamp-3"}`}>
           {doc.page_content}
         </p>
         {hasExpandableContent && (
