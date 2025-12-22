@@ -1,7 +1,7 @@
 import { ChatRequest, ChatResponse, Message } from "@/types/chat";
 
-const API_BASE_URL = "https://fih-rag-public-881796397796.europe-west1.run.app";
-const API_KEY = "dev-secret-key";
+const API_BASE_URL = "https://fih-rag-api-282549120912.europe-west1.run.app";
+const API_KEY = "some_secret_key";
 
 export async function sendChatMessage(
   query: string,
