@@ -39,7 +39,7 @@ export function DebugTrace({ message }: DebugTraceProps) {
         </Button>
       </CollapsibleTrigger>
       <CollapsibleContent className="mt-2">
-        <Card className="p-3 bg-muted/30 border-border/50 space-y-3">
+        <Card className="p-3 bg-muted/50 border-border space-y-3">
           {/* Standalone query */}
           {message.standalone_query && (
             <div className="flex items-start gap-2">
