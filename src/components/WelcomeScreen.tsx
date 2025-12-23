@@ -1,92 +1,73 @@
-import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
-  Target, 
-  Users, 
-  Trophy,
-  MessageCircleQuestion
+  CircleHelp,
+  Scale,
+  Clock,
+  Shuffle
 } from "lucide-react";
 
 interface WelcomeScreenProps {
   onExampleClick: (question: string) => void;
 }
 
-const exampleQuestions = [
-  "Can I hit the ball in indoor hockey?",
-  "What is the penalty for a deliberate foul in the circle?",
-  "How long is a green card suspension?",
-  "What are the differences between outdoor and indoor rules?",
-];
-
-const features = [
+const suggestions = [
   {
-    icon: Target,
-    title: "Umpires",
-    description: "Quick rule checks between matches",
+    icon: CircleHelp,
+    title: "Explain a rule",
+    question: "What is the penalty for a deliberate foul in the circle?",
   },
   {
-    icon: Users,
-    title: "Coaches & Players",
-    description: "Ensure strategies are rule-compliant",
+    icon: Scale,
+    title: "Compare variants",
+    question: "What are the differences between outdoor and indoor rules?",
   },
   {
-    icon: Trophy,
-    title: "Fans & Commentators",
-    description: "Understand umpiring decisions instantly",
+    icon: Clock,
+    title: "Card suspensions",
+    question: "How long is a green card suspension?",
+  },
+  {
+    icon: Shuffle,
+    title: "Quick check",
+    question: "Can I hit the ball in indoor hockey?",
   },
 ];
 
 export function WelcomeScreen({ onExampleClick }: WelcomeScreenProps) {
   return (
-    <div className="flex-1 flex flex-col items-center justify-start md:justify-center p-4 md:p-6 text-center overflow-y-auto">
-      <div className="max-w-2xl space-y-4 md:space-y-8">
-        {/* Compact header on mobile */}
-        <div className="space-y-2 md:space-y-4">
-          <div className="flex items-center justify-center gap-3">
-            <div className="w-10 h-10 md:w-16 md:h-16 rounded-full bg-primary flex items-center justify-center">
-              <MessageCircleQuestion className="w-5 h-5 md:w-8 md:h-8 text-primary-foreground" />
-            </div>
-          </div>
-          <h1 className="text-xl md:text-3xl font-bold text-foreground">
-            FIH Rules AI Agent
+    <div className="flex-1 flex flex-col items-center justify-center p-6 md:p-8">
+      <div className="max-w-2xl w-full space-y-8 md:space-y-12">
+        {/* Main heading */}
+        <div className="text-center space-y-4">
+          <h1 className="text-2xl md:text-4xl lg:text-5xl font-semibold text-foreground">
+            What can I help with?
           </h1>
-          <p className="text-muted-foreground text-sm md:text-lg">
-            Your Digital Umpire's Assistant for instant, expert-level clarity on International Hockey Federation rules.
-          </p>
           <div className="flex justify-center gap-2">
-            <Badge variant="secondary" className="text-xs md:text-sm">Outdoor</Badge>
-            <Badge variant="secondary" className="text-xs md:text-sm">Indoor</Badge>
-            <Badge variant="secondary" className="text-xs md:text-sm">Hockey5s</Badge>
+            <Badge variant="secondary" className="text-xs font-normal">Outdoor</Badge>
+            <Badge variant="secondary" className="text-xs font-normal">Indoor</Badge>
+            <Badge variant="secondary" className="text-xs font-normal">Hockey5s</Badge>
           </div>
         </div>
 
-        {/* Hide features on mobile to save space */}
-        <div className="hidden md:grid grid-cols-1 md:grid-cols-3 gap-4">
-          {features.map((feature) => (
-            <Card key={feature.title} className="p-4 bg-card">
-              <feature.icon className="w-8 h-8 mx-auto mb-3 text-primary" />
-              <h3 className="font-semibold text-foreground">{feature.title}</h3>
-              <p className="text-sm text-muted-foreground mt-1">
-                {feature.description}
-              </p>
-            </Card>
+        {/* 2x2 suggestion grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {suggestions.map((suggestion) => (
+            <button
+              key={suggestion.title}
+              onClick={() => onExampleClick(suggestion.question)}
+              className="flex items-start gap-3 p-4 rounded-xl border border-border bg-card hover:bg-muted/50 transition-colors text-left group"
+            >
+              <div className="p-2 rounded-lg bg-muted group-hover:bg-background transition-colors">
+                <suggestion.icon className="w-5 h-5 text-muted-foreground" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-medium text-sm text-foreground">{suggestion.title}</p>
+                <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">
+                  {suggestion.question}
+                </p>
+              </div>
+            </button>
           ))}
-        </div>
-
-        {/* Example questions - more compact on mobile */}
-        <div className="space-y-2 md:space-y-3">
-          <p className="text-xs md:text-sm font-medium text-foreground">Try asking:</p>
-          <div className="flex flex-wrap justify-center gap-1.5 md:gap-2">
-            {exampleQuestions.slice(0, 3).map((question) => (
-              <button
-                key={question}
-                onClick={() => onExampleClick(question)}
-                className="px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm bg-secondary text-secondary-foreground rounded-full hover:bg-secondary/80 transition-colors"
-              >
-                {question}
-              </button>
-            ))}
-          </div>
         </div>
       </div>
     </div>
