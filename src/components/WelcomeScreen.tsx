@@ -18,8 +18,8 @@ const suggestions = [
   },
   {
     icon: Scale,
-    title: "Compare variants",
-    question: "What are the differences between outdoor and indoor rules?",
+    title: "Check rules",
+    question: "What is rule 13.2?",
   },
   {
     icon: Clock,
