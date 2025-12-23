@@ -98,10 +98,9 @@ export function ChatMessage({ message, isLatest = false }: ChatMessageProps) {
               </>
             )}
           </Button>
+          {showDebugTrace && <DebugTrace message={message} />}
         </div>
       )}
-
-      {showDebugTrace && <DebugTrace message={message} />}
     </div>
   );
 }
