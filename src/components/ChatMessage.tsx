@@ -80,6 +80,7 @@ export function ChatMessage({ message, isLatest = false }: ChatMessageProps) {
       {/* Actions for assistant messages */}
       {showCopyButton && (
         <div className="flex items-center gap-1">
+          {showDebugTrace && <DebugTrace message={message} />}
           <Button
             variant="ghost"
             size="sm"
@@ -98,7 +99,6 @@ export function ChatMessage({ message, isLatest = false }: ChatMessageProps) {
               </>
             )}
           </Button>
-          {showDebugTrace && <DebugTrace message={message} />}
         </div>
       )}
     </div>
