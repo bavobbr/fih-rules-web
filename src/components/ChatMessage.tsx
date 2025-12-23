@@ -57,12 +57,28 @@ export function ChatMessage({ message, isLatest = false }: ChatMessageProps) {
     <div className={`flex flex-col gap-2 animate-fade-in ${isUser ? "items-end" : "items-start"}`}>
       {/* Message content */}
       <div
-        className={`max-w-[85%] md:max-w-[75%] ${
+        className={`max-w-[85%] md:max-w-[75%] relative group ${
           isUser
             ? "px-4 py-3 rounded-2xl rounded-br-md bg-primary text-primary-foreground"
             : ""
         }`}
       >
+        {/* Hover copy button for assistant messages */}
+        {showCopyButton && (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleCopy}
+            className="absolute -top-1 -right-9 h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-foreground hover:bg-muted"
+          >
+            {copied ? (
+              <Check className="h-3.5 w-3.5" />
+            ) : (
+              <Copy className="h-3.5 w-3.5" />
+            )}
+          </Button>
+        )}
+
         {message.isLoading ? (
           <TypingIndicator />
         ) : isUser ? (
@@ -77,30 +93,8 @@ export function ChatMessage({ message, isLatest = false }: ChatMessageProps) {
         )}
       </div>
 
-      {/* Actions for assistant messages */}
-      {showCopyButton && (
-        <div className="flex items-center gap-1">
-          {showDebugTrace && <DebugTrace message={message} />}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleCopy}
-            className="h-7 px-2 text-muted-foreground hover:text-foreground"
-          >
-            {copied ? (
-              <>
-                <Check className="h-3.5 w-3.5 mr-1" />
-                <span className="text-xs">Copied</span>
-              </>
-            ) : (
-              <>
-                <Copy className="h-3.5 w-3.5 mr-1" />
-                <span className="text-xs">Copy</span>
-              </>
-            )}
-          </Button>
-        </div>
-      )}
+      {/* Sources for assistant messages */}
+      {showDebugTrace && <DebugTrace message={message} />}
     </div>
   );
 }
