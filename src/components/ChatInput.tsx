@@ -92,7 +92,7 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Ask about FIH rules... (e.g., 'Can I hit the ball in indoor?')"
+          placeholder="Ask about FIH rules..."
           disabled={disabled}
           className="min-h-[52px] max-h-[200px] resize-none"
           rows={1}
