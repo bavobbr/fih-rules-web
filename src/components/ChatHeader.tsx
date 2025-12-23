@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Circle, Moon, Sun, Info } from "lucide-react";
 import { useTheme } from "next-themes";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { Link } from "react-router-dom";
 
 interface ChatHeaderProps {
   onNewChat: () => void;
@@ -20,7 +21,9 @@ export function ChatHeader({ onNewChat, isHealthy, onAboutClick }: ChatHeaderPro
     <header className="flex items-center justify-between px-3 py-2 md:px-4 md:py-3 border-b border-border bg-background/80 backdrop-blur-sm">
       <div className="flex items-center gap-2 md:gap-3">
         <SidebarTrigger className="text-muted-foreground hover:text-foreground hover:bg-muted" />
-        <h1 className="text-base md:text-lg font-semibold text-foreground">FIH Rules AI</h1>
+        <Link to="/" className="text-base md:text-lg font-semibold text-foreground hover:text-primary transition-colors">
+          FIH Rules AI
+        </Link>
         <Circle
           className={`w-2 h-2 ${
             isHealthy === null
