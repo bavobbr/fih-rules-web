@@ -82,8 +82,8 @@ export function ChatSidebar({
                     )}
                   >
                     <MessageSquare className="w-4 h-4 shrink-0" />
-                    <div className="flex-1 min-w-0 text-left">
-                      <div className="truncate text-sm">{conversation.title}</div>
+                    <div className="flex-1 min-w-0 text-left overflow-hidden">
+                      <div className="truncate text-sm max-w-[140px]">{conversation.title}</div>
                       <div className="text-xs text-muted-foreground">
                         {formatDistanceToNow(conversation.updatedAt, { addSuffix: true })}
                       </div>
