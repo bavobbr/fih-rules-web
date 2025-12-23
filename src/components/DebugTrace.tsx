@@ -33,7 +33,7 @@ export function DebugTrace({ message }: DebugTraceProps) {
           className="h-7 gap-1.5 text-xs text-muted-foreground hover:text-foreground px-2 -ml-2"
         >
           <Info className="w-3.5 h-3.5" />
-          <span>Sources{sourceCount > 0 ? ` (${sourceCount})` : ""}</span>
+          <span>Sources</span>
           {isOpen ? (
             <ChevronUp className="w-3.5 h-3.5" />
           ) : (
