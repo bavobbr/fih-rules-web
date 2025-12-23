@@ -3,11 +3,13 @@ import {
   CircleHelp,
   Scale,
   Clock,
-  Shuffle
+  Shuffle,
+  ExternalLink
 } from "lucide-react";
 
 interface WelcomeScreenProps {
   onExampleClick: (question: string) => void;
+  onAboutClick?: () => void;
 }
 
 const suggestions = [
@@ -33,7 +35,7 @@ const suggestions = [
   },
 ];
 
-export function WelcomeScreen({ onExampleClick }: WelcomeScreenProps) {
+export function WelcomeScreen({ onExampleClick, onAboutClick }: WelcomeScreenProps) {
   return (
     <div className="flex-1 flex flex-col items-center justify-center p-6 md:p-8">
       <div className="max-w-2xl w-full space-y-8 md:space-y-12">
@@ -68,6 +70,28 @@ export function WelcomeScreen({ onExampleClick }: WelcomeScreenProps) {
               </div>
             </button>
           ))}
+        </div>
+
+        {/* Attribution Footer */}
+        <div className="text-center space-y-2">
+          <p className="text-xs text-muted-foreground">
+            Based on{" "}
+            <a
+              href="https://www.fih.hockey/about-fih/official-documents/rules-of-hockey"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-primary hover:underline"
+            >
+              official FIH rules
+              <ExternalLink className="h-3 w-3" />
+            </a>
+          </p>
+          <button
+            onClick={onAboutClick}
+            className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+          >
+            About & Disclaimers
+          </button>
         </div>
       </div>
     </div>
