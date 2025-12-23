@@ -58,9 +58,16 @@ export function useVoiceInput({
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState("");
   const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
+  const onTranscriptRef = useRef<UseVoiceInputOptions["onTranscript"]>(onTranscript);
+  const onErrorRef = useRef<UseVoiceInputOptions["onError"]>(onError);
   
   const SpeechRecognitionClass = getSpeechRecognition();
   const isSupported = !!SpeechRecognitionClass;
+
+  useEffect(() => {
+    onTranscriptRef.current = onTranscript;
+    onErrorRef.current = onError;
+  }, [onTranscript, onError]);
 
   useEffect(() => {
     if (!SpeechRecognitionClass) return;
@@ -86,8 +93,8 @@ export function useVoiceInput({
       const currentTranscript = finalTranscript || interimTranscript;
       setTranscript(currentTranscript);
 
-      if (finalTranscript && onTranscript) {
-        onTranscript(finalTranscript);
+      if (finalTranscript && onTranscriptRef.current) {
+        onTranscriptRef.current(finalTranscript);
       }
     };
 
@@ -95,14 +102,14 @@ export function useVoiceInput({
       console.error("Speech recognition error:", event.error);
       setIsListening(false);
       
-      if (onError) {
+      if (onErrorRef.current) {
         const errorMessages: Record<string, string> = {
           "not-allowed": "Microphone access denied. Please allow microphone permissions.",
           "no-speech": "No speech detected. Please try again.",
           "network": "Network error. Please check your connection.",
           "aborted": "Speech recognition was aborted.",
         };
-        onError(errorMessages[event.error] || `Error: ${event.error}`);
+        onErrorRef.current(errorMessages[event.error] || `Error: ${event.error}`);
       }
     };
 
@@ -115,7 +122,7 @@ export function useVoiceInput({
     return () => {
       recognition.abort();
     };
-  }, [SpeechRecognitionClass, continuous, language, onTranscript, onError]);
+  }, [SpeechRecognitionClass, continuous, language]);
 
   const startListening = useCallback(() => {
     if (!recognitionRef.current || isListening) return;
