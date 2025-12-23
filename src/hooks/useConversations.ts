@@ -63,7 +63,8 @@ function saveActiveConversationId(id: string | null) {
 
 export function useConversations() {
   const [conversations, setConversations] = useState<Conversation[]>(() => loadConversations());
-  const [activeConversationId, setActiveConversationId] = useState<string | null>(() => loadActiveConversationId());
+  // Always start with no active conversation (fresh homepage)
+  const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
 
   // Save conversations whenever they change
   useEffect(() => {

@@ -1,15 +1,15 @@
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { RotateCcw, Circle, Moon, Sun } from "lucide-react";
+import { Circle, Moon, Sun, Info } from "lucide-react";
 import { useTheme } from "next-themes";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 
 interface ChatHeaderProps {
   onNewChat: () => void;
   isHealthy: boolean | null;
+  onAboutClick?: () => void;
 }
 
-export function ChatHeader({ onNewChat, isHealthy }: ChatHeaderProps) {
+export function ChatHeader({ onNewChat, isHealthy, onAboutClick }: ChatHeaderProps) {
   const { theme, setTheme } = useTheme();
 
   const toggleTheme = () => {
@@ -17,45 +17,39 @@ export function ChatHeader({ onNewChat, isHealthy }: ChatHeaderProps) {
   };
 
   return (
-    <header className="flex items-center justify-between px-3 py-2 md:px-4 md:py-4 bg-primary text-primary-foreground shadow-lg">
+    <header className="flex items-center justify-between px-3 py-2 md:px-4 md:py-3 border-b border-border bg-background/80 backdrop-blur-sm">
       <div className="flex items-center gap-2 md:gap-3">
-        <SidebarTrigger className="text-primary-foreground/90 hover:text-primary-foreground hover:bg-primary-foreground/10" />
-        <h1 className="text-base md:text-xl font-bold">FIH Rules AI</h1>
-        <Badge variant="secondary" className="hidden sm:flex items-center gap-1.5 bg-primary-foreground/20 text-primary-foreground border-primary-foreground/30">
-          <Circle
-            className={`w-2 h-2 ${
-              isHealthy === null
-                ? "fill-primary-foreground/50 text-primary-foreground/50"
-                : isHealthy
-                ? "fill-green-400 text-green-400"
-                : "fill-red-400 text-red-400"
-            }`}
-          />
-          {isHealthy === null ? "Checking..." : isHealthy ? "Online" : "Offline"}
-        </Badge>
-        {/* Mobile-only status dot */}
+        <SidebarTrigger className="text-muted-foreground hover:text-foreground hover:bg-muted" />
+        <h1 className="text-base md:text-lg font-semibold text-foreground">FIH Rules AI</h1>
         <Circle
-          className={`w-2 h-2 sm:hidden ${
+          className={`w-2 h-2 ${
             isHealthy === null
-              ? "fill-primary-foreground/50 text-primary-foreground/50"
+              ? "fill-muted-foreground/50 text-muted-foreground/50"
               : isHealthy
-              ? "fill-green-400 text-green-400"
-              : "fill-red-400 text-red-400"
+              ? "fill-green-500 text-green-500"
+              : "fill-red-500 text-red-500"
           }`}
         />
       </div>
-      <div className="flex items-center gap-1 md:gap-2">
-        <Button variant="ghost" size="icon" onClick={toggleTheme} className="h-8 w-8 md:h-9 md:w-9 text-primary-foreground/90 hover:text-primary-foreground hover:bg-primary-foreground/10">
+      <div className="flex items-center gap-1">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={onAboutClick}
+          className="h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-muted"
+        >
+          <Info className="h-4 w-4" />
+          <span className="sr-only">About</span>
+        </Button>
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={toggleTheme} 
+          className="h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-muted"
+        >
           <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
           <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
           <span className="sr-only">Toggle theme</span>
-        </Button>
-        <Button variant="ghost" size="icon" onClick={onNewChat} className="h-8 w-8 md:hidden text-primary-foreground/90 hover:text-primary-foreground hover:bg-primary-foreground/10">
-          <RotateCcw className="w-4 h-4" />
-        </Button>
-        <Button variant="ghost" size="sm" onClick={onNewChat} className="hidden md:flex gap-2 text-primary-foreground/90 hover:text-primary-foreground hover:bg-primary-foreground/10">
-          <RotateCcw className="w-4 h-4" />
-          New Chat
         </Button>
       </div>
     </header>
