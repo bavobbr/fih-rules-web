@@ -1,9 +1,10 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { ChatHeader } from "@/components/ChatHeader";
 import { ChatMessage } from "@/components/ChatMessage";
 import { ChatInput } from "@/components/ChatInput";
 import { WelcomeScreen } from "@/components/WelcomeScreen";
 import { ChatSidebar } from "@/components/ChatSidebar";
+import { AboutDialog } from "@/components/AboutDialog";
 import { useChatWithConversations } from "@/hooks/useChatWithConversations";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SidebarProvider } from "@/components/ui/sidebar";
@@ -22,6 +23,7 @@ const Index = () => {
     startNewChat,
   } = useChatWithConversations();
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [aboutOpen, setAboutOpen] = useState(false);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -40,11 +42,11 @@ const Index = () => {
           onNewChat={startNewChat}
         />
         <div className="flex flex-col flex-1 h-[100dvh] overflow-hidden">
-          <ChatHeader onNewChat={clearChat} isHealthy={isHealthy} />
+          <ChatHeader onNewChat={clearChat} isHealthy={isHealthy} onAboutClick={() => setAboutOpen(true)} />
           
           <div className="flex-1 overflow-hidden">
             {messages.length === 0 ? (
-              <WelcomeScreen onExampleClick={sendMessage} />
+              <WelcomeScreen onExampleClick={sendMessage} onAboutClick={() => setAboutOpen(true)} />
             ) : (
               <ScrollArea className="h-full" ref={scrollRef}>
                 <div className="p-4 md:p-6 space-y-6 max-w-3xl mx-auto pb-4">
@@ -64,6 +66,7 @@ const Index = () => {
             <ChatInput onSend={sendMessage} disabled={isLoading} />
           </div>
         </div>
+        <AboutDialog open={aboutOpen} onOpenChange={setAboutOpen} />
       </div>
     </SidebarProvider>
   );
