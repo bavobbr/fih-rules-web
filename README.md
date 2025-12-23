@@ -1,73 +1,132 @@
-# Welcome to your Lovable project
+# Field Hockey Rule AI
 
-## Project info
+AI-driven Field Hockey rules QA companion. Get instant, expert-level clarity on International Hockey Federation (FIH) rules for Outdoor, Indoor, and Hockey5s.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## About
 
-## How can I edit this code?
+This is the web UI for a Field Hockey rules engine that allows QA towards the official ruleset of outdoor, indoor, and hockey5s. The application provides a conversational interface where users can ask questions about field hockey rules and receive AI-powered responses with source citations.
 
-There are several ways of editing your application.
+## Tech Stack
 
-**Use Lovable**
+- **Framework**: [React 18](https://react.dev/) with [TypeScript](https://www.typescriptlang.org/)
+- **Build Tool**: [Vite](https://vitejs.dev/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/) with [shadcn/ui](https://ui.shadcn.com/) components
+- **Routing**: [React Router](https://reactrouter.com/)
+- **State Management**: React hooks with localStorage persistence
+- **Markdown Rendering**: [react-markdown](https://github.com/remarkjs/react-markdown)
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+## Components
 
-Changes made via Lovable will be committed automatically to this repo.
+### Core Components
 
-**Use your preferred IDE**
+| Component | Description |
+|-----------|-------------|
+| `ChatMessage` | Displays individual chat messages with typing animation and markdown support |
+| `ChatInput` | Text input with voice input support and send functionality |
+| `ChatHeader` | App header with navigation, theme toggle, and status indicator |
+| `ChatSidebar` | Conversation history sidebar with create/delete/select functionality |
+| `WelcomeScreen` | Landing screen with suggested questions and quick-start options |
+| `TypingIndicator` | Animated typing dots shown while waiting for AI response |
+| `DebugTrace` | Collapsible debug information showing response metadata and sources |
+| `SourceCard` | Displays source document citations with expandable content |
+| `AboutDialog` | Information dialog with disclaimers and attribution |
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Hooks
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+| Hook | Description |
+|------|-------------|
+| `useChat` | Core chat logic for sending messages and managing state |
+| `useChatWithConversations` | Extended chat hook with conversation persistence |
+| `useConversations` | Manages conversation CRUD operations and localStorage sync |
+| `useTypewriter` | Typewriter animation effect for AI responses |
+| `useVoiceInput` | Browser speech recognition for voice input |
 
-Follow these steps:
+## API Integration
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
+The app communicates with the FIH RAG (Retrieval-Augmented Generation) API:
+
+- **Base URL**: `https://fih-rag-api-282549120912.europe-west1.run.app`
+- **Authentication**: API key via `x-api-key` header
+
+### Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/chat` | POST | Send a query with conversation history, receive AI response |
+| `/health` | GET | Health check endpoint |
+
+### Request/Response Format
+
+```typescript
+// Request
+interface ChatRequest {
+  query: string;
+  history: Message[];
+}
+
+// Response
+interface ChatResponse {
+  response: string;
+  standalone_query?: string;
+  source_docs?: SourceDoc[];
+  variant?: string;
+}
+```
+
+## Installation
+
+### Prerequisites
+
+- Node.js 18+ 
+- npm or bun
+
+### Setup
+
+```bash
+# Clone the repository
 git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
 cd <YOUR_PROJECT_NAME>
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Install dependencies
+npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The app will be available at `http://localhost:5173`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Environment Variables
 
-**Use GitHub Codespaces**
+Create a `.env` file for custom configuration (optional - defaults are provided):
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+```env
+VITE_API_BASE_URL=https://fih-rag-api-282549120912.europe-west1.run.app
+VITE_API_KEY=your_api_key
+```
 
-## What technologies are used for this project?
+## Deployment
 
-This project is built with:
+### Build for Production
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+```bash
+npm run build
+```
 
-## How can I deploy this project?
+This generates a static build in the `dist/` folder.
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+### Deploy to Vercel
 
-## Can I connect a custom domain to my Lovable project?
+1. Connect your GitHub repository to Vercel
+2. Set environment variables in Vercel dashboard:
+   - `VITE_API_BASE_URL`
+   - `VITE_API_KEY`
+3. Deploy
 
-Yes, you can!
+### Deploy to Other Platforms
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+The `dist/` folder contains static files that can be deployed to any static hosting service (Netlify, Cloudflare Pages, AWS S3, etc.).
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## License
+
+This project is proprietary software.
