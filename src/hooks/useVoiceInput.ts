@@ -95,6 +95,9 @@ export function useVoiceInput({
 
       if (finalTranscript && onTranscriptRef.current) {
         onTranscriptRef.current(finalTranscript);
+        if (!continuous) {
+          recognition.stop();
+        }
       }
     };
 

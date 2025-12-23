@@ -28,15 +28,6 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
     },
   });
 
-  useEffect(() => {
-    if (isListening && transcript) {
-      setInput((prev) => {
-        const baseText = prev.replace(/\s*\[.*?\]\s*$/, "");
-        return baseText ? `${baseText} ${transcript}` : transcript;
-      });
-    }
-  }, [transcript, isListening]);
-
   const handleSend = () => {
     const trimmed = input.trim();
     if (trimmed && !disabled) {
