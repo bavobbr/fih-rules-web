@@ -2,8 +2,7 @@ import { useState, useCallback } from "react";
 import ReactMarkdown from "react-markdown";
 import { ChatMessage as ChatMessageType } from "@/types/chat";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { User, Bot, Copy, Check } from "lucide-react";
+import { Copy, Check } from "lucide-react";
 import { TypingIndicator } from "./TypingIndicator";
 import { DebugTrace } from "./DebugTrace";
 import { useTypewriter } from "@/hooks/useTypewriter";
@@ -20,7 +19,6 @@ export function ChatMessage({ message, isLatest = false }: ChatMessageProps) {
   const { toast } = useToast();
   const isUser = message.role === "user";
 
-  // Only animate the latest assistant message that just arrived
   const shouldAnimate = !isUser && isLatest && !message.isLoading;
 
   const handleComplete = useCallback(() => {
@@ -56,58 +54,54 @@ export function ChatMessage({ message, isLatest = false }: ChatMessageProps) {
   const showCopyButton = !isUser && !message.isLoading && message.content;
 
   return (
-    <div
-      className={`flex gap-3 animate-fade-in ${isUser ? "flex-row-reverse" : "flex-row"}`}
-    >
+    <div className={`flex flex-col gap-2 animate-fade-in ${isUser ? "items-end" : "items-start"}`}>
+      {/* Message content */}
       <div
-        className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${
-          isUser ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"
+        className={`max-w-[85%] md:max-w-[75%] ${
+          isUser
+            ? "px-4 py-3 rounded-2xl rounded-br-md bg-primary text-primary-foreground"
+            : ""
         }`}
       >
-        {isUser ? <User className="w-5 h-5" /> : <Bot className="w-5 h-5" />}
-      </div>
-
-      <div className={`flex flex-col gap-2 max-w-[80%] ${isUser ? "items-end" : "items-start"}`}>
-        <div className="group relative">
-          <Card
-            className={`px-4 py-3 ${
-              isUser
-                ? "bg-primary text-primary-foreground"
-                : "bg-card text-card-foreground"
-            }`}
-          >
-            {message.isLoading ? (
-              <TypingIndicator />
-            ) : isUser ? (
-              <p className="whitespace-pre-wrap">{textToShow}</p>
-            ) : (
-              <div className="prose prose-sm dark:prose-invert max-w-none prose-p:my-1 prose-ul:my-1 prose-ol:my-1 prose-li:my-0 prose-headings:my-2 prose-headings:font-semibold">
-                <ReactMarkdown>{textToShow}</ReactMarkdown>
-                {showCursor && (
-                  <span className="inline-block w-0.5 h-5 bg-current ml-0.5 animate-[pulse_1s_ease-in-out_infinite]" />
-                )}
-              </div>
+        {message.isLoading ? (
+          <TypingIndicator />
+        ) : isUser ? (
+          <p className="whitespace-pre-wrap text-sm md:text-base">{textToShow}</p>
+        ) : (
+          <div className="prose prose-sm dark:prose-invert max-w-none prose-p:my-2 prose-ul:my-2 prose-ol:my-2 prose-li:my-0.5 prose-headings:my-3 prose-headings:font-semibold text-foreground">
+            <ReactMarkdown>{textToShow}</ReactMarkdown>
+            {showCursor && (
+              <span className="inline-block w-0.5 h-5 bg-primary ml-0.5 animate-[pulse_1s_ease-in-out_infinite]" />
             )}
-          </Card>
-          
-          {showCopyButton && (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleCopy}
-              className="absolute -right-10 top-1 h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
-            >
-              {copied ? (
-                <Check className="h-4 w-4 text-green-500" />
-              ) : (
-                <Copy className="h-4 w-4 text-muted-foreground" />
-              )}
-            </Button>
-          )}
-        </div>
-
-        {showDebugTrace && <DebugTrace message={message} />}
+          </div>
+        )}
       </div>
+
+      {/* Actions for assistant messages */}
+      {showCopyButton && (
+        <div className="flex items-center gap-1">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleCopy}
+            className="h-7 px-2 text-muted-foreground hover:text-foreground"
+          >
+            {copied ? (
+              <>
+                <Check className="h-3.5 w-3.5 mr-1" />
+                <span className="text-xs">Copied</span>
+              </>
+            ) : (
+              <>
+                <Copy className="h-3.5 w-3.5 mr-1" />
+                <span className="text-xs">Copy</span>
+              </>
+            )}
+          </Button>
+        </div>
+      )}
+
+      {showDebugTrace && <DebugTrace message={message} />}
     </div>
   );
 }

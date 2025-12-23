@@ -2,8 +2,7 @@ import { useState } from "react";
 import { SourceDoc } from "@/types/chat";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { ChevronDown, ChevronUp, BookOpen, FileText } from "lucide-react";
+import { ChevronDown, ChevronUp, FileText } from "lucide-react";
 
 interface SourceCardProps {
   doc: SourceDoc;
@@ -18,59 +17,54 @@ export function SourceCard({ doc, index }: SourceCardProps) {
   const hasExpandableContent = doc.page_content.length > 200;
 
   return (
-    <Card className="p-3 bg-background border-border">
-      {/* Header with chapter + heading */}
+    <div className="py-3 border-b border-border/30 last:border-b-0">
+      {/* Header */}
       <div className="flex items-start gap-2 mb-2">
-        <BookOpen className="w-4 h-4 text-primary mt-0.5 shrink-0" />
-        <div className="flex-1 min-w-0">
-          {header ? (
-            <p className="font-medium text-sm text-foreground truncate">{header}</p>
-          ) : (
-            <p className="font-medium text-sm text-muted-foreground">Source {index + 1}</p>
-          )}
-        </div>
+        <FileText className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
+        <p className="font-medium text-sm text-foreground">
+          {header || `Source ${index + 1}`}
+        </p>
       </div>
 
-      {/* Metadata badges */}
-      <div className="flex flex-wrap gap-1.5 mb-2">
+      {/* Metadata pills */}
+      <div className="flex flex-wrap gap-1.5 mb-2 ml-6">
         {metadata.variant && (
-          <Badge variant="outline" className="text-xs">
+          <Badge variant="secondary" className="text-xs font-normal px-2 py-0.5">
             {metadata.variant}
           </Badge>
         )}
         {metadata.page && (
-          <Badge variant="outline" className="text-xs">
+          <Badge variant="secondary" className="text-xs font-normal px-2 py-0.5">
             Page {metadata.page}
           </Badge>
         )}
         {metadata.section && (
-          <Badge variant="outline" className="text-xs">
+          <Badge variant="secondary" className="text-xs font-normal px-2 py-0.5">
             § {metadata.section}
           </Badge>
         )}
         {metadata.rule_number && (
-          <Badge variant="outline" className="text-xs">
+          <Badge variant="secondary" className="text-xs font-normal px-2 py-0.5">
             Rule {metadata.rule_number}
           </Badge>
         )}
         {metadata.source_file && (
-          <Badge variant="secondary" className="text-xs gap-1">
-            <FileText className="w-3 h-3" />
+          <Badge variant="outline" className="text-xs font-normal px-2 py-0.5">
             {metadata.source_file}
           </Badge>
         )}
       </div>
 
-      {/* Summary if available */}
+      {/* Summary */}
       {metadata.summary && (
-        <p className="text-xs text-muted-foreground italic mb-2 line-clamp-2">
+        <p className="text-xs text-muted-foreground italic mb-2 ml-6 line-clamp-2">
           {metadata.summary}
         </p>
       )}
 
-      {/* Content with expand/collapse */}
-      <div className="relative">
-        <p className={`text-sm text-foreground/80 ${isExpanded ? "" : "line-clamp-3"}`}>
+      {/* Content */}
+      <div className="ml-6">
+        <p className={`text-sm text-muted-foreground ${isExpanded ? "" : "line-clamp-3"}`}>
           {doc.page_content}
         </p>
         {hasExpandableContent && (
@@ -78,7 +72,7 @@ export function SourceCard({ doc, index }: SourceCardProps) {
             variant="ghost"
             size="sm"
             onClick={() => setIsExpanded(!isExpanded)}
-            className="h-6 text-xs text-primary hover:text-primary/80 px-2 mt-1"
+            className="h-6 text-xs text-muted-foreground hover:text-foreground px-0 mt-1"
           >
             {isExpanded ? (
               <>
@@ -86,12 +80,12 @@ export function SourceCard({ doc, index }: SourceCardProps) {
               </>
             ) : (
               <>
-                Show full <ChevronDown className="w-3 h-3 ml-1" />
+                Show more <ChevronDown className="w-3 h-3 ml-1" />
               </>
             )}
           </Button>
         )}
       </div>
-    </Card>
+    </div>
   );
 }
