@@ -21,7 +21,11 @@ export function ChatHeader({ onNewChat, isHealthy, onAboutClick }: ChatHeaderPro
     <header className="flex items-center justify-between px-3 py-2 md:px-4 md:py-3 border-b border-border bg-background/80 backdrop-blur-sm">
       <div className="flex items-center gap-2 md:gap-3">
         <SidebarTrigger className="text-muted-foreground hover:text-foreground hover:bg-muted" />
-        <Link to="/" className="text-base md:text-lg font-semibold text-foreground hover:text-primary transition-colors">
+        <Link 
+          to="/" 
+          onClick={onNewChat}
+          className="text-base md:text-lg font-semibold text-foreground hover:text-primary transition-colors"
+        >
           FIH Rules AI
         </Link>
         <Circle
