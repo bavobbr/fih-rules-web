@@ -26,7 +26,7 @@ export function ChatHeader({ onNewChat, isHealthy, onAboutClick }: ChatHeaderPro
           onClick={onNewChat}
           className="text-base md:text-lg font-semibold text-foreground hover:text-primary transition-colors"
         >
-          FIH Rules AI
+          Field Hockey Rule AI
         </Link>
         <Circle
           className={`w-2 h-2 ${
