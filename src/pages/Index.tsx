@@ -33,7 +33,7 @@ const Index = () => {
 
   return (
     <SidebarProvider defaultOpen={false}>
-      <div className="flex min-h-[100dvh] w-full bg-background">
+      <div className="flex min-h-[100dvh] w-full bg-background pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]">
         <ChatSidebar
           conversations={conversations}
           activeConversationId={activeConversationId}
