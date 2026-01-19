@@ -3,6 +3,7 @@ import { ChatMessage, Message } from "@/types/chat";
 import { sendChatMessage, checkHealth } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import { useConversations } from "@/hooks/useConversations";
+import { analytics } from "@/lib/analytics";
 
 export function useChatWithConversations() {
   const {
@@ -105,10 +106,13 @@ export function useChatWithConversations() {
           responseTime,
         };
 
+        // Track successful question
+        analytics.questionAsked(response.variant);
+
         const updatedMessages = newMessages.map(msg =>
           msg.id === loadingMessage.id ? assistantMessage : msg
         );
-        
+
         setMessages(updatedMessages);
         updateConversation(currentConversationId, updatedMessages);
       } catch (error) {

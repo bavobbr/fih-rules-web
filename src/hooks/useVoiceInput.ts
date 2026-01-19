@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from "react";
+import { analytics } from "@/lib/analytics";
 
 // Type declarations for Web Speech API
 interface SpeechRecognitionEvent extends Event {
@@ -129,11 +130,12 @@ export function useVoiceInput({
 
   const startListening = useCallback(() => {
     if (!recognitionRef.current || isListening) return;
-    
+
     setTranscript("");
     try {
       recognitionRef.current.start();
       setIsListening(true);
+      analytics.voiceInputUsed();
     } catch (error) {
       console.error("Failed to start speech recognition:", error);
     }

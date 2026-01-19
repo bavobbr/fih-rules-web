@@ -48,6 +48,37 @@ Quick orientation for the Field Hockey Rule AI web app. Use this as a first-read
 - react-markdown for message rendering
 - localStorage for persistence
 
+## Android / Capacitor
+
+The `android/` directory is a Capacitor wrapper for the web app.
+
+### Capacitor commands
+| Command | What it does |
+|---------|--------------|
+| `npx cap copy` | **Only copies web assets** from `dist/` to `android/app/src/main/assets/public/` — does NOT touch native build files |
+| `npx cap sync` | Copies web assets AND updates native dependencies/plugins |
+| `npx cap update` | Updates native plugins and Capacitor core libraries |
+| `npx cap add android` | Creates the entire `android/` directory from scratch (destructive) |
+
+**Typical workflow:** `npm run build && npx cap copy android`
+
+### Custom state in `android/` (not regenerated)
+These files contain manual customizations that would be lost if regenerating from scratch:
+- `app/build.gradle` — release signing config (loads from `keystore.properties`), versionCode/versionName
+- `build.gradle` — Gradle plugin version (`8.13.2`)
+- `variables.gradle` — SDK targets (`compileSdkVersion = 35`, `targetSdkVersion = 35`)
+- `res/values/styles.xml` — splash screen theme
+- `res/drawable-*/splash.png` — custom splash images
+
+### Signing
+Release builds require a `keystore.properties` file (git-ignored) in `android/` with:
+```
+storeFile=path/to/keystore.jks
+storePassword=...
+keyAlias=...
+keyPassword=...
+```
+
 ## What to read first
 1. `src/pages/Index.tsx`
 2. `src/hooks/useChatWithConversations.ts`

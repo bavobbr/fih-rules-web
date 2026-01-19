@@ -7,6 +7,7 @@ import { TypingIndicator } from "./TypingIndicator";
 import { DebugTrace } from "./DebugTrace";
 import { useTypewriter } from "@/hooks/useTypewriter";
 import { useToast } from "@/hooks/use-toast";
+import { analytics } from "@/lib/analytics";
 
 interface ChatMessageProps {
   message: ChatMessageType;
@@ -36,6 +37,7 @@ export function ChatMessage({ message, isLatest = false }: ChatMessageProps) {
     try {
       await navigator.clipboard.writeText(message.content);
       setCopied(true);
+      analytics.messageCopied();
       toast({
         description: "Copied to clipboard",
       });

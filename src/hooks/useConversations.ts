@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { Conversation, ChatMessage } from "@/types/chat";
+import { analytics } from "@/lib/analytics";
 
 const CONVERSATIONS_KEY = "fih-rules-conversations";
 const ACTIVE_CONVERSATION_KEY = "fih-rules-active-conversation";
@@ -89,6 +90,7 @@ export function useConversations() {
 
     setConversations(prev => [newConversation, ...prev]);
     setActiveConversationId(newConversation.id);
+    analytics.conversationCreated();
     return newConversation;
   }, []);
 
@@ -110,6 +112,7 @@ export function useConversations() {
     if (activeConversationId === id) {
       setActiveConversationId(null);
     }
+    analytics.conversationDeleted();
   }, [activeConversationId]);
 
   const selectConversation = useCallback((id: string | null) => {

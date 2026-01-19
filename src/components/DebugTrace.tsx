@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Search, Clock, ChevronDown, ChevronUp, Info } from "lucide-react";
 import { SourceCard } from "./SourceCard";
+import { analytics } from "@/lib/analytics";
 
 interface DebugTraceProps {
   message: ChatMessage;
@@ -25,7 +26,10 @@ export function DebugTrace({ message }: DebugTraceProps) {
   const sourceCount = message.source_docs?.length || 0;
 
   return (
-    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+    <Collapsible open={isOpen} onOpenChange={(open) => {
+      setIsOpen(open);
+      if (open) analytics.sourcesExpanded();
+    }}>
       <CollapsibleTrigger asChild>
         <Button 
           variant="ghost" 
