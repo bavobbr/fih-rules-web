@@ -41,13 +41,13 @@ export function WelcomeScreen({ onExampleClick, onAboutClick }: WelcomeScreenPro
       <div className="max-w-2xl w-full space-y-8 md:space-y-12">
         {/* Main heading */}
         <div className="text-center space-y-4">
-          <h1 className="text-2xl md:text-4xl lg:text-5xl font-semibold text-foreground">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-semibold text-foreground tracking-tight">
             What can I help with?
           </h1>
           <div className="flex justify-center gap-2">
-            <Badge variant="secondary" className="text-xs font-normal">Outdoor</Badge>
-            <Badge variant="secondary" className="text-xs font-normal">Indoor</Badge>
-            <Badge variant="secondary" className="text-xs font-normal">Hockey5s</Badge>
+            <Badge variant="secondary" className="text-sm font-medium px-3 py-1">Outdoor</Badge>
+            <Badge variant="secondary" className="text-sm font-medium px-3 py-1">Indoor</Badge>
+            <Badge variant="secondary" className="text-sm font-medium px-3 py-1">Hockey5s</Badge>
           </div>
         </div>
 
@@ -63,8 +63,8 @@ export function WelcomeScreen({ onExampleClick, onAboutClick }: WelcomeScreenPro
                 <suggestion.icon className="w-5 h-5 text-muted-foreground" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-medium text-sm text-foreground">{suggestion.title}</p>
-                <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">
+                <p className="font-semibold text-base text-foreground">{suggestion.title}</p>
+                <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
                   {suggestion.question}
                 </p>
               </div>
@@ -73,22 +73,22 @@ export function WelcomeScreen({ onExampleClick, onAboutClick }: WelcomeScreenPro
         </div>
 
         {/* Attribution Footer */}
-        <div className="text-center space-y-2">
-          <p className="text-xs text-muted-foreground">
+        <div className="text-center space-y-3">
+          <p className="text-sm text-muted-foreground">
             Based on{" "}
             <a
               href="https://www.fih.hockey/about-fih/official-documents/rules-of-hockey"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-primary hover:underline"
+              className="inline-flex items-center gap-1 text-primary hover:underline font-medium"
             >
               official FIH rules
-              <ExternalLink className="h-3 w-3" />
+              <ExternalLink className="h-3.5 w-3.5" />
             </a>
           </p>
           <button
             onClick={onAboutClick}
-            className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             About & Disclaimers
           </button>
