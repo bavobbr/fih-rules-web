@@ -45,21 +45,38 @@ export function useTypewriter({
 
     setIsTyping(true);
     let currentIndex = 0;
+    let lastTime = Date.now();
+    let timeoutId: ReturnType<typeof setTimeout>;
 
-    const intervalId = setInterval(() => {
+    const tick = () => {
+      const now = Date.now();
+      const elapsed = now - lastTime;
+      
+      // Calculate how many characters should be typed based on elapsed time
+      // This ensures animation catches up even if throttled
+      const charsPerMs = 3 / speed;
+      const charsToType = Math.max(1, Math.floor(elapsed * charsPerMs));
+      
       if (currentIndex < text.length) {
-        // Type multiple characters at once for faster feel
-        const charsToAdd = Math.min(3, text.length - currentIndex);
-        currentIndex += charsToAdd;
+        currentIndex = Math.min(currentIndex + charsToType, text.length);
         setDisplayedText(text.slice(0, currentIndex));
+        lastTime = now;
+        
+        if (currentIndex < text.length) {
+          timeoutId = setTimeout(tick, speed);
+        } else {
+          setIsTyping(false);
+          onCompleteRef.current?.();
+        }
       } else {
-        clearInterval(intervalId);
         setIsTyping(false);
         onCompleteRef.current?.();
       }
-    }, speed);
+    };
 
-    return () => clearInterval(intervalId);
+    timeoutId = setTimeout(tick, speed);
+
+    return () => clearTimeout(timeoutId);
   }, [text, speed, enabled]);
 
   const skipToEnd = useCallback(() => {
