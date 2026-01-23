@@ -71,7 +71,7 @@ const Index = () => {
           {messages.length > 0 && (
             <div className="shrink-0 relative">
               <div className="absolute inset-x-0 -top-8 h-8 bg-gradient-to-t from-background to-transparent pointer-events-none" />
-              <div className="border-t border-border bg-muted/30">
+              <div className="border-t border-border bg-muted/30 pb-[env(safe-area-inset-bottom)]">
                 <ChatInput onSend={sendMessage} disabled={isLoading} />
               </div>
             </div>

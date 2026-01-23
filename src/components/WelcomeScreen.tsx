@@ -52,15 +52,8 @@ export function WelcomeScreen({ onExampleClick, onAboutClick, inputComponent }: 
           </div>
         </div>
 
-        {/* Centered input with glow effect */}
-        {inputComponent && (
-          <div className="relative">
-            <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 rounded-3xl blur-lg opacity-60" />
-            <div className="relative">
-              {inputComponent}
-            </div>
-          </div>
-        )}
+        {/* Centered input */}
+        {inputComponent}
 
         {/* 2x2 suggestion grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
