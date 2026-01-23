@@ -14,6 +14,7 @@ const Index = () => {
     messages,
     isLoading,
     isHealthy,
+    shouldAnimateLatest,
     sendMessage,
     clearChat,
     conversations,
@@ -55,6 +56,7 @@ const Index = () => {
                       key={message.id} 
                       message={message} 
                       isLatest={index === messages.length - 1}
+                      shouldAnimate={shouldAnimateLatest && index === messages.length - 1}
                     />
                   ))}
                 </div>
