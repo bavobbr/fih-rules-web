@@ -20,6 +20,7 @@ export function useChatWithConversations() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isHealthy, setIsHealthy] = useState<boolean | null>(null);
+  const [shouldAnimateLatest, setShouldAnimateLatest] = useState(false);
   const { toast } = useToast();
   
   // Track if we're in the middle of sending a message to prevent sync issues
@@ -39,6 +40,9 @@ export function useChatWithConversations() {
     // Only sync when the conversation ID actually changes
     if (prevConversationIdRef.current !== activeConversationId) {
       prevConversationIdRef.current = activeConversationId;
+      
+      // Disable animation when loading cached conversations
+      setShouldAnimateLatest(false);
       
       if (activeConversation) {
         setMessages(activeConversation.messages);
@@ -109,6 +113,9 @@ export function useChatWithConversations() {
         // Track successful question
         analytics.questionAsked(response.variant);
 
+        // Enable animation for fresh API response
+        setShouldAnimateLatest(true);
+
         const updatedMessages = newMessages.map(msg =>
           msg.id === loadingMessage.id ? assistantMessage : msg
         );
@@ -138,6 +145,7 @@ export function useChatWithConversations() {
   const clearChat = useCallback(() => {
     startNewChat();
     setMessages([]);
+    setShouldAnimateLatest(false);
     prevConversationIdRef.current = null;
   }, [startNewChat]);
 
@@ -145,6 +153,7 @@ export function useChatWithConversations() {
     messages,
     isLoading,
     isHealthy,
+    shouldAnimateLatest,
     sendMessage,
     clearChat,
     conversations,

@@ -12,15 +12,17 @@ import { analytics } from "@/lib/analytics";
 interface ChatMessageProps {
   message: ChatMessageType;
   isLatest?: boolean;
+  shouldAnimate?: boolean;
 }
 
-export function ChatMessage({ message, isLatest = false }: ChatMessageProps) {
+export function ChatMessage({ message, isLatest = false, shouldAnimate = false }: ChatMessageProps) {
   const [hasFinishedTyping, setHasFinishedTyping] = useState(false);
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
   const isUser = message.role === "user";
 
-  const shouldAnimate = !isUser && isLatest && !message.isLoading;
+  // Only animate fresh API responses, not cached messages
+  const enableAnimation = !isUser && shouldAnimate && !message.isLoading;
 
   const handleComplete = useCallback(() => {
     setHasFinishedTyping(true);
@@ -29,7 +31,7 @@ export function ChatMessage({ message, isLatest = false }: ChatMessageProps) {
   const { displayedText, isTyping } = useTypewriter({
     text: message.content,
     speed: 12,
-    enabled: shouldAnimate,
+    enabled: enableAnimation,
     onComplete: handleComplete,
   });
 
@@ -50,9 +52,9 @@ export function ChatMessage({ message, isLatest = false }: ChatMessageProps) {
     }
   }, [message.content, toast]);
 
-  const textToShow = shouldAnimate ? displayedText : message.content;
-  const showCursor = isTyping && shouldAnimate;
-  const showDebugTrace = !isUser && !message.isLoading && (hasFinishedTyping || !shouldAnimate);
+  const textToShow = enableAnimation ? displayedText : message.content;
+  const showCursor = isTyping && enableAnimation;
+  const showDebugTrace = !isUser && !message.isLoading && (hasFinishedTyping || !enableAnimation);
   const showCopyButton = !isUser && !message.isLoading && message.content;
 
   return (
