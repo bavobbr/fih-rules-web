@@ -10,6 +10,7 @@ import {
 interface WelcomeScreenProps {
   onExampleClick: (question: string) => void;
   onAboutClick?: () => void;
+  inputComponent?: React.ReactNode;
 }
 
 const suggestions = [
@@ -35,10 +36,10 @@ const suggestions = [
   },
 ];
 
-export function WelcomeScreen({ onExampleClick, onAboutClick }: WelcomeScreenProps) {
+export function WelcomeScreen({ onExampleClick, onAboutClick, inputComponent }: WelcomeScreenProps) {
   return (
     <div className="flex-1 flex flex-col items-center justify-center p-6 md:p-8">
-      <div className="max-w-2xl w-full space-y-8 md:space-y-12">
+      <div className="max-w-2xl w-full space-y-6 md:space-y-8">
         {/* Main heading */}
         <div className="text-center space-y-4">
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-semibold text-foreground tracking-tight">
@@ -50,6 +51,16 @@ export function WelcomeScreen({ onExampleClick, onAboutClick }: WelcomeScreenPro
             <Badge variant="secondary" className="text-sm font-medium px-3 py-1">Hockey5s</Badge>
           </div>
         </div>
+
+        {/* Centered input with glow effect */}
+        {inputComponent && (
+          <div className="relative">
+            <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 rounded-3xl blur-lg opacity-60" />
+            <div className="relative">
+              {inputComponent}
+            </div>
+          </div>
+        )}
 
         {/* 2x2 suggestion grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

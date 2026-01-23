@@ -47,7 +47,11 @@ const Index = () => {
           
           <div className="flex-1 overflow-hidden">
             {messages.length === 0 ? (
-              <WelcomeScreen onExampleClick={sendMessage} onAboutClick={() => setAboutOpen(true)} />
+              <WelcomeScreen 
+                onExampleClick={sendMessage} 
+                onAboutClick={() => setAboutOpen(true)}
+                inputComponent={<ChatInput onSend={sendMessage} disabled={isLoading} />}
+              />
             ) : (
               <ScrollArea className="h-full" ref={scrollRef}>
                 <div className="p-4 md:p-6 space-y-6 max-w-3xl mx-auto pb-4">
@@ -64,9 +68,11 @@ const Index = () => {
             )}
           </div>
           
-          <div className="shrink-0 border-t border-border bg-background">
-            <ChatInput onSend={sendMessage} disabled={isLoading} />
-          </div>
+          {messages.length > 0 && (
+            <div className="shrink-0 border-t border-border bg-background">
+              <ChatInput onSend={sendMessage} disabled={isLoading} />
+            </div>
+          )}
         </div>
         <AboutDialog open={aboutOpen} onOpenChange={setAboutOpen} />
       </div>
