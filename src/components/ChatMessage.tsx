@@ -84,9 +84,9 @@ export function ChatMessage({ message, isLatest = false }: ChatMessageProps) {
         {message.isLoading ? (
           <TypingIndicator />
         ) : isUser ? (
-          <p className="whitespace-pre-wrap text-sm md:text-base">{textToShow}</p>
+          <p className="whitespace-pre-wrap text-base">{textToShow}</p>
         ) : (
-          <div className="prose prose-sm dark:prose-invert max-w-none prose-p:my-2 prose-ul:my-2 prose-ol:my-2 prose-li:my-0.5 prose-headings:my-3 prose-headings:font-semibold text-foreground">
+          <div className="prose prose-base dark:prose-invert max-w-none prose-p:my-3 prose-p:leading-relaxed prose-ul:my-3 prose-ol:my-3 prose-li:my-1 prose-headings:my-4 prose-headings:font-semibold prose-headings:tracking-tight text-foreground">
             <ReactMarkdown>{textToShow}</ReactMarkdown>
             {showCursor && (
               <span className="inline-block w-0.5 h-5 bg-primary ml-0.5 animate-[pulse_1s_ease-in-out_infinite]" />
