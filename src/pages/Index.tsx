@@ -42,10 +42,10 @@ const Index = () => {
           onDeleteConversation={deleteConversation}
           onNewChat={startNewChat}
         />
-        <div className="flex flex-col flex-1 h-full overflow-hidden">
+        <div className="flex flex-col flex-1 h-[100dvh] overflow-hidden">
           <ChatHeader onNewChat={clearChat} isHealthy={isHealthy} onAboutClick={() => setAboutOpen(true)} />
           
-          <div className="flex-1 overflow-hidden">
+          <div className="flex-1 overflow-y-auto">
             {messages.length === 0 ? (
               <WelcomeScreen 
                 onExampleClick={sendMessage} 
