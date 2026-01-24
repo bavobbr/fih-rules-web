@@ -154,6 +154,8 @@ All colors MUST be HSL.
     font-size: 16px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    height: 100%;
+    overflow: hidden;
   }
 
   body {
@@ -162,5 +164,13 @@ All colors MUST be HSL.
     font-weight: 400;
     letter-spacing: -0.01em;
     line-height: 1.6;
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
+  #root {
+    height: 100%;
+    overflow: hidden;
   }
 }

@@ -34,7 +34,7 @@ const Index = () => {
 
   return (
     <SidebarProvider defaultOpen={false}>
-      <div className="flex min-h-[100dvh] w-full bg-background pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]">
+      <div className="flex h-full w-full bg-background pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]">
         <ChatSidebar
           conversations={conversations}
           activeConversationId={activeConversationId}
@@ -42,7 +42,7 @@ const Index = () => {
           onDeleteConversation={deleteConversation}
           onNewChat={startNewChat}
         />
-        <div className="flex flex-col flex-1 h-[100dvh] overflow-hidden">
+        <div className="flex flex-col flex-1 h-full overflow-hidden">
           <ChatHeader onNewChat={clearChat} isHealthy={isHealthy} onAboutClick={() => setAboutOpen(true)} />
           
           <div className="flex-1 overflow-hidden">
