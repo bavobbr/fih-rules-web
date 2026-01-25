@@ -32,19 +32,40 @@ const Index = () => {
     const currentCount = messages.length;
     const prevCount = prevMessageCountRef.current;
 
-    if (currentCount > prevCount && messages.length > 0) {
-      const lastMessage = messages[messages.length - 1];
+    // Check if new messages were added
+    if (currentCount > prevCount && messages.length >= 2) {
+      // When user sends a message, both user message and loading message are added together
+      // So check the second-to-last message if count increased by 2 or more
+      const countDiff = currentCount - prevCount;
+      const secondToLast = messages[messages.length - 2];
 
-      if (lastMessage.role === "user") {
-        // Small delay to ensure DOM has updated
-        requestAnimationFrame(() => {
-          if (lastUserMessageRef.current) {
-            lastUserMessageRef.current.scrollIntoView({
-              behavior: "smooth",
-              block: "start"
+      // If 2+ messages were added and second-to-last is user, it's a new question
+      if (countDiff >= 2 && secondToLast?.role === "user" && viewportRef.current) {
+        // Wait for DOM to fully update
+        setTimeout(() => {
+          if (lastUserMessageRef.current && viewportRef.current) {
+            // Get the offset of the element within its scroll container
+            const messageElement = lastUserMessageRef.current;
+            const scrollContainer = viewportRef.current;
+
+            // Get the element's position relative to its offset parent
+            let offsetTop = 0;
+            let element: HTMLElement | null = messageElement;
+            while (element && element !== scrollContainer) {
+              offsetTop += element.offsetTop;
+              element = element.offsetParent as HTMLElement;
+            }
+
+            // Scroll to bring element to top with some padding
+            const targetScrollTop = offsetTop - 16; // 16px padding from top
+
+            // Scroll the viewport
+            scrollContainer.scrollTo({
+              top: targetScrollTop,
+              behavior: "smooth"
             });
           }
-        });
+        }, 100);
       }
     }
 
