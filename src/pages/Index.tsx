@@ -34,7 +34,7 @@ const Index = () => {
 
   return (
     <SidebarProvider defaultOpen={false}>
-      <div className="flex h-full w-full bg-background pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]">
+      <div className="flex h-full w-full bg-background pt-[var(--safe-area-inset-top)] pb-[var(--safe-area-inset-bottom)] pl-[var(--safe-area-inset-left)] pr-[var(--safe-area-inset-right)]">
         <ChatSidebar
           conversations={conversations}
           activeConversationId={activeConversationId}
@@ -71,7 +71,7 @@ const Index = () => {
           {messages.length > 0 && (
             <div className="shrink-0 relative">
               <div className="absolute inset-x-0 -top-8 h-8 bg-gradient-to-t from-background to-transparent pointer-events-none" />
-              <div className="border-t border-border bg-muted/30 pb-[env(safe-area-inset-bottom)]">
+              <div className="border-t border-border bg-muted/30 pb-[var(--safe-area-inset-bottom)]">
                 <ChatInput onSend={sendMessage} disabled={isLoading} />
               </div>
             </div>
