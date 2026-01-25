@@ -13,10 +13,10 @@ test.describe('Welcome Screen', () => {
     // Check for the main heading
     await expect(page.getByRole('heading', { name: /what can i help with/i })).toBeVisible();
 
-    // Check for badges
-    await expect(page.getByText('Outdoor')).toBeVisible();
-    await expect(page.getByText('Indoor')).toBeVisible();
-    await expect(page.getByText('Hockey5s')).toBeVisible();
+    // Check for badges (use .first() since some text appears in both badges and suggestions)
+    await expect(page.getByText('Outdoor').first()).toBeVisible();
+    await expect(page.getByText('Indoor').first()).toBeVisible();
+    await expect(page.getByText('Hockey5s').first()).toBeVisible();
 
     // Check for input field
     await expect(page.getByPlaceholder(/ask about rules/i)).toBeVisible();
