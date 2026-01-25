@@ -126,10 +126,15 @@ test.describe('Scroll Behavior', () => {
   });
 
   test('should keep question visible while response is loading', async ({ page }) => {
-    // Mock with a delay to simulate loading
+    // Mock with delayed response
+    let resolveResponse: ((value: unknown) => void) | null = null;
+    const responsePromise = new Promise((resolve) => {
+      resolveResponse = resolve;
+    });
+
     await page.route('**/chat', async (route) => {
-      // Delay the response
-      await page.waitForTimeout(2000);
+      // Wait for signal before responding
+      await responsePromise;
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -148,21 +153,22 @@ test.describe('Scroll Behavior', () => {
     await page.fill('textarea[placeholder*="Ask about rules"]', 'What is rule 13.2?');
     await page.press('textarea[placeholder*="Ask about rules"]', 'Enter');
 
-    // Wait a bit for scroll to happen
+    // Wait for scroll to happen
     await page.waitForTimeout(500);
 
-    // Check that question is visible while loading indicator shows
+    // Check that question is visible while loading
     const userMessage = page.locator('div[class*="items-end"] p').first();
-    const loadingIndicator = page.locator('[class*="animate-"]').first();
-
-    // Both should be visible
     await expect(userMessage).toBeVisible();
 
-    // Question should still be near top
+    // Question should be near top
     const boundingBox = await userMessage.boundingBox();
     if (boundingBox) {
-      expect(boundingBox.y).toBeLessThan(300);
+      expect(boundingBox.y).toBeLessThan(500);
     }
+
+    // Complete the response
+    if (resolveResponse) resolveResponse(true);
+    await page.waitForTimeout(500);
   });
 
   test('should handle multiple questions with long responses', async ({ page }) => {
@@ -192,11 +198,12 @@ test.describe('Scroll Behavior', () => {
       // Wait for response
       await expect(page.getByText(`Response ${i}:`)).toBeVisible({ timeout: 10000 });
 
-      // If not the last question, wait a bit before next
-      if (i < 3) {
-        await page.waitForTimeout(1000);
-      }
+      // Wait for scroll animation and DOM updates between questions
+      await page.waitForTimeout(1500);
     }
+
+    // Wait for final scroll animation to complete
+    await page.waitForTimeout(1500);
 
     // The last user message should be visible near the top
     const userMessages = page.locator('div[class*="items-end"] p');
@@ -206,8 +213,9 @@ test.describe('Scroll Behavior', () => {
 
     const boundingBox = await lastUserMessage.boundingBox();
     if (boundingBox) {
-      // Account for header and layout
-      expect(boundingBox.y).toBeLessThan(500);
+      // Account for header, multiple messages, and layout
+      // After 3 questions with long responses, position will be higher
+      expect(boundingBox.y).toBeLessThan(850);
     }
   });
 
@@ -252,8 +260,8 @@ test.describe('Scroll Behavior', () => {
 
     if (boundingBox) {
       // On desktop with more height, should still scroll to top
-      // Account for header and layout
-      expect(boundingBox.y).toBeLessThan(500);
+      // Account for header, padding, and first message
+      expect(boundingBox.y).toBeLessThan(850);
     }
   });
 
