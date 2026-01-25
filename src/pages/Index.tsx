@@ -6,7 +6,6 @@ import { WelcomeScreen } from "@/components/WelcomeScreen";
 import { ChatSidebar } from "@/components/ChatSidebar";
 import { AboutDialog } from "@/components/AboutDialog";
 import { useChatWithConversations } from "@/hooks/useChatWithConversations";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { SidebarProvider } from "@/components/ui/sidebar";
 
 const Index = () => {
@@ -23,13 +22,33 @@ const Index = () => {
     deleteConversation,
     startNewChat,
   } = useChatWithConversations();
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const lastUserMessageRef = useRef<HTMLDivElement>(null);
   const [aboutOpen, setAboutOpen] = useState(false);
+  const prevMessageCountRef = useRef(0);
 
+  // Scroll the latest user question to the top when submitted
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    const currentCount = messages.length;
+    const prevCount = prevMessageCountRef.current;
+
+    if (currentCount > prevCount && messages.length > 0) {
+      const lastMessage = messages[messages.length - 1];
+
+      if (lastMessage.role === "user") {
+        // Small delay to ensure DOM has updated
+        requestAnimationFrame(() => {
+          if (lastUserMessageRef.current) {
+            lastUserMessageRef.current.scrollIntoView({
+              behavior: "smooth",
+              block: "start"
+            });
+          }
+        });
+      }
     }
+
+    prevMessageCountRef.current = currentCount;
   }, [messages]);
 
   return (
@@ -45,26 +64,34 @@ const Index = () => {
         <div className="flex flex-col flex-1 h-[100dvh] overflow-hidden">
           <ChatHeader onNewChat={clearChat} isHealthy={isHealthy} onAboutClick={() => setAboutOpen(true)} />
           
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto" ref={viewportRef}>
             {messages.length === 0 ? (
-              <WelcomeScreen 
-                onExampleClick={sendMessage} 
+              <WelcomeScreen
+                onExampleClick={sendMessage}
                 onAboutClick={() => setAboutOpen(true)}
                 inputComponent={<ChatInput onSend={sendMessage} disabled={isLoading} />}
               />
             ) : (
-              <ScrollArea className="h-full" ref={scrollRef}>
-                <div className="p-4 md:p-6 space-y-6 max-w-3xl mx-auto pb-4">
-                  {messages.map((message, index) => (
-                    <ChatMessage 
-                      key={message.id} 
-                      message={message} 
-                      isLatest={index === messages.length - 1}
-                      shouldAnimate={shouldAnimateLatest && index === messages.length - 1}
-                    />
-                  ))}
-                </div>
-              </ScrollArea>
+              <div className="p-4 md:p-6 space-y-6 max-w-3xl mx-auto pb-4">
+                {messages.map((message, index) => {
+                  // Find if this is the last user message
+                  const isLastUserMessage = message.role === "user" &&
+                    !messages.slice(index + 1).some(m => m.role === "user");
+
+                  return (
+                    <div
+                      key={message.id}
+                      ref={isLastUserMessage ? lastUserMessageRef : null}
+                    >
+                      <ChatMessage
+                        message={message}
+                        isLatest={index === messages.length - 1}
+                        shouldAnimate={shouldAnimateLatest && index === messages.length - 1}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
             )}
           </div>
           
