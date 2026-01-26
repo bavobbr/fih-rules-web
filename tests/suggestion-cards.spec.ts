@@ -68,14 +68,14 @@ test.describe('Suggestion Cards', () => {
     // Click suggestion
     await page.getByText('What is rule 13.2?').click();
 
-    // Wait for chat view
-    await page.waitForTimeout(1000);
+    // Wait for response to appear
+    await expect(page.getByText('This is a response to your question.')).toBeVisible({ timeout: 5000 });
 
     // Welcome heading should be gone
     await expect(page.getByRole('heading', { name: /what can i help with/i })).not.toBeVisible();
 
-    // Chat messages should be visible
-    await expect(page.getByText('What is rule 13.2?')).toBeVisible();
+    // Chat messages should be visible (filter by items-end for user messages)
+    await expect(page.locator('div[class*="items-end"]').filter({ hasText: 'What is rule 13.2?' })).toBeVisible();
   });
 
   test('should have hover effect on suggestion cards', async ({ page }) => {
@@ -112,11 +112,11 @@ test.describe('Suggestion Cards', () => {
       // Click the card
       await page.getByText(testCase.question).click();
 
-      // Should see the exact question
-      await expect(page.getByText(testCase.question)).toBeVisible();
-
-      // Wait for response
+      // Wait for response to appear
       await expect(page.getByText('This is a response to your question.')).toBeVisible({ timeout: 5000 });
+
+      // Should see the exact question in user messages (filter by items-end)
+      await expect(page.locator('div[class*="items-end"]').filter({ hasText: testCase.question })).toBeVisible();
     }
   });
 
