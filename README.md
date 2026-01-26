@@ -41,6 +41,55 @@ This is the web UI for a Field Hockey rules engine that allows QA towards the of
 | `useTypewriter` | Typewriter animation effect for AI responses |
 | `useVoiceInput` | Browser speech recognition for voice input |
 
+## Testing
+
+The project uses [Playwright](https://playwright.dev/) for end-to-end testing.
+
+### Running Tests
+
+```bash
+# Run all tests (headless)
+npm run test
+
+# Run tests with UI (recommended for development)
+npm run test:ui
+
+# Run tests in headed mode (see browser)
+npm run test:headed
+```
+
+### Test Coverage
+
+The test suite includes 49 passing tests covering:
+
+- **Welcome Screen** (3 tests) - Initial load, suggestion cards, about dialog
+- **Scroll Behavior** (5 tests) - Auto-scroll on new questions, desktop/mobile viewports
+- **Chat Interaction** (6 tests) - Message submission, conversation flow, loading states
+- **Error Handling** (7 tests) - API errors, timeouts, malformed responses
+- **Input Validation** (11 tests) - Empty input, whitespace, special characters, multi-line
+- **Suggestion Cards** (9 tests) - Click interactions, navigation, keyboard support
+- **Conversation Management** (8 tests) - New chat, persistence, localStorage
+- **Copy Functionality** (9 tests) - Clipboard operations, markdown preservation, long messages
+
+### Best Practices
+
+**⚠️ IMPORTANT: Always run tests before committing code, especially after refactoring.**
+
+```bash
+# Before committing
+npm run test
+
+# If tests pass, commit
+git add .
+git commit -m "Your commit message"
+```
+
+Tests help catch:
+- Breaking changes in components
+- Selector changes that break interactions
+- Regression in core functionality
+- Layout issues affecting user experience
+
 ## API Integration
 
 The app communicates with the FIH RAG (Retrieval-Augmented Generation) API:

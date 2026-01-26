@@ -1,0 +1,159 @@
+# FIH Rules Web - AI Agent Guidelines
+
+## Project Overview
+
+This is a React + TypeScript + Vite web application for Field Hockey rules Q&A. It uses Capacitor for mobile deployment (Android/iOS) and integrates with the FIH RAG API.
+
+## Tech Stack
+
+- React 18 with TypeScript
+- Vite for build tooling
+- Tailwind CSS + shadcn/ui components
+- Playwright for E2E testing
+- Capacitor for mobile wrapper
+
+## Development Workflow
+
+### Before Making Changes
+
+1. **Read relevant code first** - Always use Read tool to understand existing code before suggesting modifications
+2. **Understand context** - Check component structure, hooks, and types before proposing changes
+3. **Check tests** - Look at existing test coverage for the area you're working on
+
+### During Development
+
+1. **Follow existing patterns** - Match the code style and patterns already in the codebase
+2. **Use TypeScript strictly** - Ensure proper typing, avoid `any` types
+3. **Component structure** - Keep components focused and use proper separation of concerns
+4. **Hooks for logic** - Extract complex logic into custom hooks (see `src/hooks/`)
+
+### Testing Requirements
+
+**⚠️ CRITICAL: Always run tests after making changes and before committing.**
+
+```bash
+# Run tests before every commit
+npm run test
+
+# For interactive debugging
+npm run test:ui
+```
+
+#### When to Run Tests
+
+- **Always** after refactoring components
+- **Always** after changing selectors or class names
+- **Always** after modifying user interactions
+- **Always** before git commit
+- After fixing bugs
+- After adding new features
+
+#### Test Patterns
+
+When writing or fixing tests:
+
+- **User messages**: Filter by `div[class*="items-end"]` to avoid strict mode violations
+- **Assistant messages**: Filter by `div[class*="items-start"]`
+- **Send button**: Use `button[class*="h-10 w-10"].last()` for reliable selection
+- **Wait for responses**: Use `expect().toBeVisible({ timeout: 5000 })` for API responses
+- **Hover interactions**: Add `await page.waitForTimeout(300)` after hover for transitions
+- **Strict mode**: Always use `.first()` or specific filters to avoid "resolved to 2 elements" errors
+
+### Git Commit Workflow
+
+```bash
+# 1. Make changes
+# 2. Run tests
+npm run test
+
+# 3. Only if tests pass, commit
+git add .
+git commit -m "Description of changes"
+git push
+```
+
+**Never commit if tests are failing.** Fix the tests or the code first.
+
+### Mobile Considerations
+
+This app runs on:
+- Web browsers (desktop & mobile)
+- Android via Capacitor
+- iOS via Capacitor (future)
+
+**Safe Area Handling:**
+- Use `env(safe-area-inset-*)` with fallbacks
+- The safe area plugin reads native insets and sets CSS variables
+- Test layout changes on both web and mobile simulators
+
+**Viewport:**
+- Use `h-[100dvh]` for full viewport height
+- Avoid `min-h-screen` which doesn't work well on mobile
+- Keep footer/header within viewport (no document scrolling)
+
+### Component Guidelines
+
+**ChatMessage:**
+- Supports markdown rendering via react-markdown
+- Typewriter animation for new AI responses
+- Copy button appears on hover for assistant messages
+- User messages right-aligned, assistant messages left-aligned
+
+**ChatInput:**
+- Supports voice input via Web Speech API
+- Multi-line with Shift+Enter
+- Auto-clears on submit
+- Disabled during loading
+
+**ChatSidebar:**
+- Conversation history with CRUD operations
+- Uses shadcn/ui Sidebar component
+- Mobile: overlay, Desktop: collapsible
+- Persist state in localStorage
+
+### Common Pitfalls
+
+1. **Strict mode violations** - Text appearing in multiple places (sidebar + chat). Always filter by class.
+2. **Async timing** - Always wait for API responses with proper timeouts
+3. **Selector brittleness** - Prefer data attributes or specific class patterns over generic selectors
+4. **Safe area insets** - Don't forget to test mobile layout changes
+5. **localStorage** - Clear browser storage when testing conversation features
+
+### API Integration
+
+- Base URL: `https://fih-rag-api-282549120912.europe-west1.run.app`
+- Requires `x-api-key` header
+- POST `/chat` - Send query with history
+- GET `/health` - Health check
+
+### File Organization
+
+```
+src/
+├── components/     # React components
+│   ├── ui/        # shadcn/ui components
+│   └── *.tsx      # App components
+├── hooks/         # Custom React hooks
+├── lib/           # Utilities and helpers
+├── pages/         # Page components
+└── types/         # TypeScript type definitions
+
+tests/
+├── helpers/       # Test utilities and mocks
+└── *.spec.ts      # Playwright test files
+```
+
+### Code Style
+
+- Use functional components with hooks
+- Prefer `const` over `let`
+- Use arrow functions
+- Extract complex JSX into sub-components
+- Keep components under 200 lines
+- Use early returns for conditional rendering
+
+### Remember
+
+> "Test before commit" - This saves time by catching issues early and prevents broken builds.
+
+When in doubt, check existing code patterns and test coverage before making changes.
