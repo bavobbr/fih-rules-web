@@ -111,13 +111,15 @@ export function WelcomeScreen({ onSend, onAboutClick, disabled }: WelcomeScreenP
         {/* Centered input */}
         <ChatInput onSend={handleSend} disabled={disabled} />
 
-        {/* 2x2 suggestion grid */}
+        {/* 2x2 suggestion grid - show 2 on mobile, 4 on larger screens */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {suggestions.map((suggestion) => (
+          {suggestions.map((suggestion, index) => (
             <button
               key={suggestion.title}
               onClick={() => handleExampleClick(suggestion.question)}
-              className="flex items-start gap-3 p-4 rounded-xl border border-border bg-card hover:bg-muted/50 transition-colors text-left group"
+              className={`flex items-start gap-3 p-4 rounded-xl border border-border bg-card hover:bg-muted/50 transition-colors text-left group ${
+                index >= 2 ? 'hidden sm:flex' : ''
+              }`}
             >
               <div className="p-2 rounded-lg bg-muted group-hover:bg-background transition-colors">
                 <suggestion.icon className="w-5 h-5 text-muted-foreground" />
