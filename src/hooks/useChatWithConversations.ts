@@ -53,9 +53,9 @@ export function useChatWithConversations() {
   }, [activeConversationId, activeConversation]);
 
   const sendMessage = useCallback(
-    async (query: string) => {
+    async (query: string, country?: string) => {
       isSendingRef.current = true;
-      
+
       const userMessage: ChatMessage = {
         id: crypto.randomUUID(),
         role: "user",
@@ -96,7 +96,7 @@ export function useChatWithConversations() {
         }));
 
         const startTime = Date.now();
-        const response = await sendChatMessage(query, history);
+        const response = await sendChatMessage(query, history, country);
         const responseTime = Date.now() - startTime;
 
         const assistantMessage: ChatMessage = {

@@ -53,7 +53,22 @@ export async function mockChatError(page: Page, status = 500) {
   });
 }
 
+export async function mockCountries(page: Page) {
+  await page.route(`${API_BASE_URL}/jurisdictions`, async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([
+        { code: 'BEL', name: 'Belgium' },
+        { code: 'NLD', name: 'Netherlands' },
+        { code: 'DEU', name: 'Germany' },
+      ]),
+    });
+  });
+}
+
 export async function mockAllAPIs(page: Page) {
   await mockHealthCheck(page, true);
   await mockChatResponse(page);
+  await mockCountries(page);
 }

@@ -88,9 +88,9 @@ const Index = () => {
           <div className="flex-1 overflow-y-auto" ref={viewportRef}>
             {messages.length === 0 ? (
               <WelcomeScreen
-                onExampleClick={sendMessage}
+                onSend={sendMessage}
                 onAboutClick={() => setAboutOpen(true)}
-                inputComponent={<ChatInput onSend={sendMessage} disabled={isLoading} />}
+                disabled={isLoading}
               />
             ) : (
               <div className="p-4 md:p-6 space-y-6 max-w-3xl mx-auto pb-4">

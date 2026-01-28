@@ -54,4 +54,25 @@ test.describe('Welcome Screen', () => {
     // This is a placeholder - adjust based on your AboutDialog component
     await expect(page.getByRole('dialog')).toBeVisible();
   });
+
+  test('should display country selector with International as default', async ({ page }) => {
+    await page.goto('/');
+
+    // Check for country selector with International as default
+    const countrySelect = page.getByText('International').first();
+    await expect(countrySelect).toBeVisible();
+  });
+
+  test('should allow selecting a country', async ({ page }) => {
+    await page.goto('/');
+
+    // Open the country selector by clicking the trigger
+    await page.getByText('International').first().click();
+
+    // Wait for the dropdown to appear and select Belgium
+    await page.getByRole('option', { name: 'Belgium' }).click();
+
+    // Verify selection - Belgium should now be displayed instead of International
+    await expect(page.getByText('Belgium').first()).toBeVisible();
+  });
 });

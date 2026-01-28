@@ -3,6 +3,11 @@ export interface Message {
   content: string;
 }
 
+export interface Country {
+  code: string;  // ISO 3-letter code (e.g., "BEL")
+  name: string;  // Full name (e.g., "Belgium")
+}
+
 export interface SourceDocMetadata {
   page?: number;
   source?: string;
@@ -24,6 +29,7 @@ export interface SourceDoc {
 export interface ChatRequest {
   query: string;
   history: Message[];
+  country?: string;  // Optional country code for jurisdiction-specific rules
 }
 
 export interface ChatResponse {
