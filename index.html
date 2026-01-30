@@ -4,13 +4,27 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BSWFVBNJ1P"></script>
+    <!-- Google Analytics - Disabled in automated test environments -->
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-BSWFVBNJ1P');
+      // Detect automated test environments (Playwright, Selenium, etc.)
+      // webdriver property is set to true by automation tools
+      const isAutomatedTest = window.navigator.webdriver === true;
+
+      if (!isAutomatedTest) {
+        // Load GA script dynamically
+        const gaScript = document.createElement('script');
+        gaScript.async = true;
+        gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-BSWFVBNJ1P';
+        document.head.appendChild(gaScript);
+
+        // Initialize GA
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-BSWFVBNJ1P');
+      } else {
+        console.log('[Test Mode] Google Analytics disabled');
+      }
     </script>
     
     <!-- Favicon -->

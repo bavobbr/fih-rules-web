@@ -67,8 +67,17 @@ export async function mockCountries(page: Page) {
   });
 }
 
+export async function blockGoogleAnalytics(page: Page) {
+  // Block all Google Analytics requests to prevent polluting analytics data during tests
+  await page.route('**/*google-analytics.com/**', route => route.abort());
+  await page.route('**/*googletagmanager.com/**', route => route.abort());
+  await page.route('**/*analytics.google.com/**', route => route.abort());
+  await page.route('**/gtag/js**', route => route.abort());
+}
+
 export async function mockAllAPIs(page: Page) {
   await mockHealthCheck(page, true);
   await mockChatResponse(page);
   await mockCountries(page);
+  await blockGoogleAnalytics(page);
 }
