@@ -1,4 +1,4 @@
-import { useState, KeyboardEvent, useEffect } from "react";
+import { useState, KeyboardEvent, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
@@ -13,6 +13,7 @@ interface ChatInputProps {
 
 export function ChatInput({ onSend, disabled }: ChatInputProps) {
   const [input, setInput] = useState("");
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { toast } = useToast();
 
   const { isListening, isSupported, transcript, toggleListening } = useVoiceInput({
@@ -55,6 +56,17 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
     toggleListening();
   };
 
+  // Auto-resize textarea based on content
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      // Reset height to auto to get the correct scrollHeight
+      textarea.style.height = 'auto';
+      // Set height to scrollHeight to fit content
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    }
+  }, [input]);
+
   return (
     <div className="p-4 md:p-6">
       <div className="max-w-3xl mx-auto relative">
@@ -80,12 +92,13 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
         {/* Input container - pill shaped */}
         <div className="flex items-end gap-2 p-2 rounded-2xl border border-border bg-card shadow-sm">
           <Textarea
+            ref={textareaRef}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Ask about rules"
             disabled={disabled}
-            className="min-h-[44px] max-h-[200px] resize-none border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 py-3 px-2"
+            className="min-h-[44px] max-h-[200px] resize-none border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 py-3 px-2 overflow-y-auto"
             rows={1}
           />
           <div className="flex items-center gap-1 pb-1">
