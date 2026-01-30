@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import {
   Select,
@@ -15,11 +14,14 @@ import {
   ExternalLink
 } from "lucide-react";
 import { ChatInput } from "@/components/ChatInput";
-import { fetchCountries } from "@/lib/api";
 import { Country } from "@/types/chat";
 
 interface WelcomeScreenProps {
-  onSend: (question: string, country?: string) => void;
+  countries: Country[];
+  selectedCountry: string;
+  onCountryChange: (country: string) => void;
+  isLoadingCountries: boolean;
+  onSend: (question: string) => void;
   onAboutClick?: () => void;
   disabled?: boolean;
 }
@@ -47,28 +49,15 @@ const suggestions = [
   },
 ];
 
-export function WelcomeScreen({ onSend, onAboutClick, disabled }: WelcomeScreenProps) {
-  const [countries, setCountries] = useState<Country[]>([]);
-  const [selectedCountry, setSelectedCountry] = useState<string>("international");
-  const [isLoadingCountries, setIsLoadingCountries] = useState(true);
-
-  useEffect(() => {
-    fetchCountries()
-      .then(setCountries)
-      .finally(() => setIsLoadingCountries(false));
-  }, []);
-
-  const handleSend = (message: string) => {
-    // Only send country if it's not "international" (which maps to no country filter)
-    const countryCode = selectedCountry === "international" ? undefined : selectedCountry;
-    onSend(message, countryCode);
-  };
-
-  const handleExampleClick = (question: string) => {
-    // Only send country if it's not "international" (which maps to no country filter)
-    const countryCode = selectedCountry === "international" ? undefined : selectedCountry;
-    onSend(question, countryCode);
-  };
+export function WelcomeScreen({
+  countries,
+  selectedCountry,
+  onCountryChange,
+  isLoadingCountries,
+  onSend,
+  onAboutClick,
+  disabled
+}: WelcomeScreenProps) {
 
   return (
     <div className="flex-1 flex flex-col items-center justify-center p-6 md:p-8">
@@ -90,7 +79,7 @@ export function WelcomeScreen({ onSend, onAboutClick, disabled }: WelcomeScreenP
           <div className="w-full max-w-xs">
             <Select
               value={selectedCountry}
-              onValueChange={setSelectedCountry}
+              onValueChange={onCountryChange}
               disabled={isLoadingCountries}
             >
               <SelectTrigger className="h-10 w-full">
@@ -109,14 +98,14 @@ export function WelcomeScreen({ onSend, onAboutClick, disabled }: WelcomeScreenP
         </div>
 
         {/* Centered input */}
-        <ChatInput onSend={handleSend} disabled={disabled} />
+        <ChatInput onSend={onSend} disabled={disabled} />
 
         {/* 2x2 suggestion grid - show 2 on mobile, 4 on larger screens */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {suggestions.map((suggestion, index) => (
             <button
               key={suggestion.title}
-              onClick={() => handleExampleClick(suggestion.question)}
+              onClick={() => onSend(suggestion.question)}
               className={`flex items-start gap-3 p-4 rounded-xl border border-border bg-card hover:bg-muted/50 transition-colors text-left group ${
                 index >= 2 ? 'hidden sm:flex' : ''
               }`}

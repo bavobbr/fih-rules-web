@@ -7,6 +7,8 @@ import { ChatSidebar } from "@/components/ChatSidebar";
 import { AboutDialog } from "@/components/AboutDialog";
 import { useChatWithConversations } from "@/hooks/useChatWithConversations";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { fetchCountries } from "@/lib/api";
+import { Country } from "@/types/chat";
 
 const Index = () => {
   const {
@@ -26,6 +28,30 @@ const Index = () => {
   const lastUserMessageRef = useRef<HTMLDivElement>(null);
   const [aboutOpen, setAboutOpen] = useState(false);
   const prevMessageCountRef = useRef(0);
+
+  // Country selection state - persists throughout conversation
+  const [countries, setCountries] = useState<Country[]>([]);
+  const [selectedCountry, setSelectedCountry] = useState<string>("international");
+  const [isLoadingCountries, setIsLoadingCountries] = useState(true);
+
+  // Fetch countries on mount
+  useEffect(() => {
+    fetchCountries()
+      .then(setCountries)
+      .finally(() => setIsLoadingCountries(false));
+  }, []);
+
+  // Wrapper to send messages with country parameter
+  const handleSendMessage = (message: string) => {
+    const countryCode = selectedCountry === "international" ? undefined : selectedCountry;
+    sendMessage(message, countryCode);
+  };
+
+  // Enhanced clearChat that also resets country selection
+  const handleClearChat = () => {
+    clearChat();
+    setSelectedCountry("international");
+  };
 
   // Scroll the latest user question to the top when submitted
   useEffect(() => {
@@ -83,12 +109,16 @@ const Index = () => {
           onNewChat={startNewChat}
         />
         <div className="flex flex-col flex-1 h-[100dvh] overflow-hidden">
-          <ChatHeader onNewChat={clearChat} isHealthy={isHealthy} onAboutClick={() => setAboutOpen(true)} />
-          
+          <ChatHeader onNewChat={handleClearChat} isHealthy={isHealthy} onAboutClick={() => setAboutOpen(true)} />
+
           <div className="flex-1 overflow-y-auto" ref={viewportRef}>
             {messages.length === 0 ? (
               <WelcomeScreen
-                onSend={sendMessage}
+                countries={countries}
+                selectedCountry={selectedCountry}
+                onCountryChange={setSelectedCountry}
+                isLoadingCountries={isLoadingCountries}
+                onSend={handleSendMessage}
                 onAboutClick={() => setAboutOpen(true)}
                 disabled={isLoading}
               />
@@ -120,7 +150,7 @@ const Index = () => {
             <div className="shrink-0 relative">
               <div className="absolute inset-x-0 -top-8 h-8 bg-gradient-to-t from-background to-transparent pointer-events-none" />
               <div className="border-t border-border bg-muted/30 pb-[var(--safe-area-inset-bottom)]">
-                <ChatInput onSend={sendMessage} disabled={isLoading} />
+                <ChatInput onSend={handleSendMessage} disabled={isLoading} />
               </div>
             </div>
           )}
