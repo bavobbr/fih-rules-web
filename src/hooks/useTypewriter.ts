@@ -34,7 +34,7 @@ export function useTypewriter({
     if (text === textRef.current && displayedText.length > 0) {
       return;
     }
-    
+
     textRef.current = text;
 
     if (!text) {
@@ -47,21 +47,24 @@ export function useTypewriter({
     let currentIndex = 0;
     let lastTime = Date.now();
     let timeoutId: ReturnType<typeof setTimeout>;
+    let isRunning = true;
 
     const tick = () => {
+      if (!isRunning) return;
+
       const now = Date.now();
       const elapsed = now - lastTime;
-      
+
       // Calculate how many characters should be typed based on elapsed time
       // This ensures animation catches up even if throttled
       const charsPerMs = 3 / speed;
       const charsToType = Math.max(1, Math.floor(elapsed * charsPerMs));
-      
+
       if (currentIndex < text.length) {
         currentIndex = Math.min(currentIndex + charsToType, text.length);
         setDisplayedText(text.slice(0, currentIndex));
         lastTime = now;
-        
+
         if (currentIndex < text.length) {
           timeoutId = setTimeout(tick, speed);
         } else {
@@ -74,9 +77,24 @@ export function useTypewriter({
       }
     };
 
+    // Handle visibility change - restart the animation loop when page becomes visible
+    const handleVisibilityChange = () => {
+      if (!document.hidden && isRunning && currentIndex < text.length) {
+        // Page became visible, restart the animation loop
+        clearTimeout(timeoutId);
+        lastTime = Date.now();
+        timeoutId = setTimeout(tick, 0);
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
     timeoutId = setTimeout(tick, speed);
 
-    return () => clearTimeout(timeoutId);
+    return () => {
+      isRunning = false;
+      clearTimeout(timeoutId);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
   }, [text, speed, enabled]);
 
   const skipToEnd = useCallback(() => {

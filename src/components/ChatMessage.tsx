@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import { ChatMessage as ChatMessageType } from "@/types/chat";
 import { Button } from "@/components/ui/button";
@@ -13,9 +13,10 @@ interface ChatMessageProps {
   message: ChatMessageType;
   isLatest?: boolean;
   shouldAnimate?: boolean;
+  onTypingChange?: (isTyping: boolean) => void;
 }
 
-export function ChatMessage({ message, isLatest = false, shouldAnimate = false }: ChatMessageProps) {
+export function ChatMessage({ message, isLatest = false, shouldAnimate = false, onTypingChange }: ChatMessageProps) {
   const [hasFinishedTyping, setHasFinishedTyping] = useState(false);
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
@@ -34,6 +35,11 @@ export function ChatMessage({ message, isLatest = false, shouldAnimate = false }
     enabled: enableAnimation,
     onComplete: handleComplete,
   });
+
+  // Notify parent when typing state changes
+  useEffect(() => {
+    onTypingChange?.(isTyping);
+  }, [isTyping, onTypingChange]);
 
   const handleCopy = useCallback(async () => {
     try {

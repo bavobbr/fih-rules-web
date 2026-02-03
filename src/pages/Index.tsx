@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import { ChatHeader } from "@/components/ChatHeader";
 import { ChatMessage } from "@/components/ChatMessage";
 import { ChatInput } from "@/components/ChatInput";
@@ -26,8 +26,15 @@ const Index = () => {
   } = useChatWithConversations();
   const viewportRef = useRef<HTMLDivElement>(null);
   const lastUserMessageRef = useRef<HTMLDivElement>(null);
+  const lastMessageRef = useRef<HTMLDivElement>(null);
   const [aboutOpen, setAboutOpen] = useState(false);
   const prevMessageCountRef = useRef(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  // Callback when typewriter animation state changes
+  const handleTypingChange = useCallback((typing: boolean) => {
+    setIsAnimating(typing);
+  }, []);
 
   // Country selection state - persists throughout conversation
   const [countries, setCountries] = useState<Country[]>([]);
@@ -98,6 +105,36 @@ const Index = () => {
     prevMessageCountRef.current = currentCount;
   }, [messages]);
 
+  // Auto-scroll during typewriter animation to keep new text visible
+  useEffect(() => {
+    if (!isAnimating || !viewportRef.current || !lastMessageRef.current) return;
+
+    const scrollContainer = viewportRef.current;
+    const messageElement = lastMessageRef.current;
+
+    // Use MutationObserver to detect when message content changes
+    const observer = new MutationObserver(() => {
+      // Check if we're near the bottom (within 200px) - if so, keep scrolling
+      const isNearBottom = scrollContainer.scrollHeight - scrollContainer.scrollTop - scrollContainer.clientHeight < 200;
+
+      if (isNearBottom) {
+        // Scroll to show the latest content
+        scrollContainer.scrollTo({
+          top: scrollContainer.scrollHeight,
+          behavior: "auto" // Use auto for smooth continuous scrolling during animation
+        });
+      }
+    });
+
+    observer.observe(messageElement, {
+      childList: true,
+      subtree: true,
+      characterData: true,
+    });
+
+    return () => observer.disconnect();
+  }, [isAnimating]);
+
   return (
     <SidebarProvider defaultOpen={false}>
       <div className="flex h-full w-full bg-background pt-[var(--safe-area-inset-top)] pb-[var(--safe-area-inset-bottom)] pl-[var(--safe-area-inset-left)] pr-[var(--safe-area-inset-right)]">
@@ -128,16 +165,18 @@ const Index = () => {
                   // Find if this is the last user message
                   const isLastUserMessage = message.role === "user" &&
                     !messages.slice(index + 1).some(m => m.role === "user");
+                  const isLastMessage = index === messages.length - 1;
 
                   return (
                     <div
                       key={message.id}
-                      ref={isLastUserMessage ? lastUserMessageRef : null}
+                      ref={isLastUserMessage ? lastUserMessageRef : (isLastMessage ? lastMessageRef : null)}
                     >
                       <ChatMessage
                         message={message}
-                        isLatest={index === messages.length - 1}
-                        shouldAnimate={shouldAnimateLatest && index === messages.length - 1}
+                        isLatest={isLastMessage}
+                        shouldAnimate={shouldAnimateLatest && isLastMessage}
+                        onTypingChange={isLastMessage ? handleTypingChange : undefined}
                       />
                     </div>
                   );
