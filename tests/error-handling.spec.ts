@@ -27,8 +27,8 @@ test.describe('Error Handling', () => {
     await page.fill('textarea[placeholder*="Ask about rules"]', 'Test question');
     await page.press('textarea[placeholder*="Ask about rules"]', 'Enter');
 
-    // Should show error toast
-    await expect(page.getByText(/failed to get a response/i)).toBeVisible({ timeout: 5000 });
+    // Should show error toast (use first() to avoid strict mode - message appears in multiple elements)
+    await expect(page.getByText(/failed to get a response/i).first()).toBeVisible({ timeout: 5000 });
   });
 
   test('should handle network timeout gracefully', async ({ page }) => {
@@ -82,8 +82,8 @@ test.describe('Error Handling', () => {
     await page.fill('textarea[placeholder*="Ask about rules"]', 'Test question');
     await page.press('textarea[placeholder*="Ask about rules"]', 'Enter');
 
-    // Should show error
-    await expect(page.getByText(/failed to get a response/i)).toBeVisible({ timeout: 5000 });
+    // Should show error (use first() to avoid strict mode - message appears in multiple elements)
+    await expect(page.getByText(/failed to get a response/i).first()).toBeVisible({ timeout: 5000 });
   });
 
   test('should handle empty response gracefully', async ({ page }) => {
@@ -148,7 +148,7 @@ test.describe('Error Handling', () => {
     // First attempt - should fail
     await page.fill('textarea[placeholder*="Ask about rules"]', 'Test question');
     await page.press('textarea[placeholder*="Ask about rules"]', 'Enter');
-    await expect(page.getByText(/failed to get a response/i)).toBeVisible({ timeout: 5000 });
+    await expect(page.getByText(/failed to get a response/i).first()).toBeVisible({ timeout: 5000 });
 
     // Wait for error toast to potentially disappear
     await page.waitForTimeout(2000);
