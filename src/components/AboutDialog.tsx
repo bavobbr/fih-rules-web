@@ -5,13 +5,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { 
-  ExternalLink, 
-  Github, 
-  Linkedin, 
+import {
+  ExternalLink,
+  Github,
+  Linkedin,
   FileText,
   AlertTriangle,
-  Info
+  Info,
+  Users,
+  MessageCircle
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
@@ -122,6 +124,35 @@ export function AboutDialog({ open, onOpenChange, children }: AboutDialogProps) 
               >
                 <Linkedin className="h-4 w-4 text-muted-foreground" />
                 <span className="text-xs">LinkedIn</span>
+              </a>
+            </div>
+          </section>
+
+          <Separator />
+
+          {/* Credits Section */}
+          <section className="space-y-3">
+            <h3 className="font-semibold text-foreground">Credits</h3>
+
+            <div className="grid grid-cols-2 gap-2">
+              <a
+                href="https://dmon.be"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 p-2.5 rounded-lg border border-border hover:bg-muted/50 transition-colors"
+              >
+                <Users className="h-4 w-4 text-muted-foreground" />
+                <span className="text-xs">D-mon Umpires</span>
+              </a>
+
+              <a
+                href="https://fhumpires.com/discord"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 p-2.5 rounded-lg border border-border hover:bg-muted/50 transition-colors"
+              >
+                <MessageCircle className="h-4 w-4 text-muted-foreground" />
+                <span className="text-xs">FHUmpires Discord</span>
               </a>
             </div>
           </section>
