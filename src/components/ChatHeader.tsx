@@ -27,7 +27,7 @@ export function ChatHeader({ onNewChat, isHealthy, onAboutClick, onSourcesClick 
           onClick={onNewChat}
           className="text-base md:text-lg font-semibold text-foreground hover:text-primary transition-colors"
         >
-          Field Hockey Rule AI
+          Field Hockey Rules Agent
         </Link>
         <Circle
           className={`w-2 h-2 ${

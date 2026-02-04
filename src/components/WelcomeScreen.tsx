@@ -76,9 +76,10 @@ export function WelcomeScreen({
           </div>
         </div>
 
-        {/* Country selector */}
+        {/* Ruleset selector */}
         <div className="flex justify-center">
-          <div className="w-full max-w-xs">
+          <div className="w-full max-w-xs space-y-1.5">
+            <label className="text-sm font-medium text-muted-foreground pl-1">Ruleset</label>
             <Select
               value={selectedCountry}
               onValueChange={onCountryChange}

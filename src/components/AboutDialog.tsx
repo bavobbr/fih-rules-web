@@ -29,7 +29,7 @@ export function AboutDialog({ open, onOpenChange, children }: AboutDialogProps) 
       {children && <DialogTrigger asChild>{children}</DialogTrigger>}
       <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-xl">About FIH Rules AI</DialogTitle>
+          <DialogTitle className="text-xl">About Field Hockey Rules Agent</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-5 text-sm">

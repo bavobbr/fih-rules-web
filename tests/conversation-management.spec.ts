@@ -46,7 +46,7 @@ test.describe('Conversation Management', () => {
     await expect(page.getByText('Response 1')).toBeVisible({ timeout: 5000 });
 
     // Click header title to start new chat (alternative to sidebar)
-    await page.getByText('Field Hockey Rule AI').click();
+    await page.getByText('Field Hockey Rules Agent').click();
     await page.waitForTimeout(500);
 
     // Should return to welcome screen
@@ -65,7 +65,7 @@ test.describe('Conversation Management', () => {
     await expect(page.getByText('Response 1')).toBeVisible({ timeout: 5000 });
 
     // Start new conversation via header link
-    await page.getByText('Field Hockey Rule AI').click();
+    await page.getByText('Field Hockey Rules Agent').click();
     await page.waitForTimeout(500);
 
     // Send message in new conversation
