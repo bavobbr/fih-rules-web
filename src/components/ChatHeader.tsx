@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Circle, Moon, Sun, Info } from "lucide-react";
+import { Circle, Moon, Sun, Info, Database } from "lucide-react";
 import { useTheme } from "next-themes";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Link } from "react-router-dom";
@@ -8,9 +8,10 @@ interface ChatHeaderProps {
   onNewChat: () => void;
   isHealthy: boolean | null;
   onAboutClick?: () => void;
+  onSourcesClick?: () => void;
 }
 
-export function ChatHeader({ onNewChat, isHealthy, onAboutClick }: ChatHeaderProps) {
+export function ChatHeader({ onNewChat, isHealthy, onAboutClick, onSourcesClick }: ChatHeaderProps) {
   const { theme, setTheme } = useTheme();
 
   const toggleTheme = () => {
@@ -39,19 +40,28 @@ export function ChatHeader({ onNewChat, isHealthy, onAboutClick }: ChatHeaderPro
         />
       </div>
       <div className="flex items-center gap-1">
-        <Button 
-          variant="ghost" 
-          size="icon" 
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onSourcesClick}
+          className="h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-muted"
+        >
+          <Database className="h-4 w-4" />
+          <span className="sr-only">Sources</span>
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
           onClick={onAboutClick}
           className="h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-muted"
         >
           <Info className="h-4 w-4" />
           <span className="sr-only">About</span>
         </Button>
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          onClick={toggleTheme} 
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={toggleTheme}
           className="h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-muted"
         >
           <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />

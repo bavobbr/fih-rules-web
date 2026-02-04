@@ -47,11 +47,10 @@ test.describe('Welcome Screen', () => {
   test('should show About dialog when About button is clicked', async ({ page }) => {
     await page.goto('/');
 
-    // Click About button
-    await page.getByRole('button', { name: /about & disclaimers/i }).click();
+    // Click About button in footer (the visible text button, not the header icon)
+    await page.getByRole('button', { name: 'About', exact: true }).nth(1).click();
 
-    // Check if dialog appears (you may need to adjust based on actual dialog content)
-    // This is a placeholder - adjust based on your AboutDialog component
+    // Check if dialog appears
     await expect(page.getByRole('dialog')).toBeVisible();
   });
 

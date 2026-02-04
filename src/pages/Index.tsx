@@ -5,6 +5,7 @@ import { ChatInput } from "@/components/ChatInput";
 import { WelcomeScreen } from "@/components/WelcomeScreen";
 import { ChatSidebar } from "@/components/ChatSidebar";
 import { AboutDialog } from "@/components/AboutDialog";
+import { SourcesDialog } from "@/components/SourcesDialog";
 import { useChatWithConversations } from "@/hooks/useChatWithConversations";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { fetchCountries } from "@/lib/api";
@@ -28,6 +29,7 @@ const Index = () => {
   const lastUserMessageRef = useRef<HTMLDivElement>(null);
   const lastMessageRef = useRef<HTMLDivElement>(null);
   const [aboutOpen, setAboutOpen] = useState(false);
+  const [sourcesOpen, setSourcesOpen] = useState(false);
   const prevMessageCountRef = useRef(0);
   const [isAnimating, setIsAnimating] = useState(false);
 
@@ -146,7 +148,7 @@ const Index = () => {
           onNewChat={startNewChat}
         />
         <div className="flex flex-col flex-1 h-[100dvh] overflow-hidden">
-          <ChatHeader onNewChat={handleClearChat} isHealthy={isHealthy} onAboutClick={() => setAboutOpen(true)} />
+          <ChatHeader onNewChat={handleClearChat} isHealthy={isHealthy} onAboutClick={() => setAboutOpen(true)} onSourcesClick={() => setSourcesOpen(true)} />
 
           <div className="flex-1 overflow-y-auto" ref={viewportRef}>
             {messages.length === 0 ? (
@@ -157,6 +159,7 @@ const Index = () => {
                 isLoadingCountries={isLoadingCountries}
                 onSend={handleSendMessage}
                 onAboutClick={() => setAboutOpen(true)}
+                onSourcesClick={() => setSourcesOpen(true)}
                 disabled={isLoading}
               />
             ) : (
@@ -195,6 +198,7 @@ const Index = () => {
           )}
         </div>
         <AboutDialog open={aboutOpen} onOpenChange={setAboutOpen} />
+        <SourcesDialog open={sourcesOpen} onOpenChange={setSourcesOpen} />
       </div>
     </SidebarProvider>
   );

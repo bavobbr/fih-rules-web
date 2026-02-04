@@ -56,3 +56,10 @@ export interface Conversation {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface DocumentStat {
+  source_file: string;
+  variant: string;
+  country: string;
+  chunk_count: number;
+}

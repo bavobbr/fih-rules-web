@@ -23,6 +23,7 @@ interface WelcomeScreenProps {
   isLoadingCountries: boolean;
   onSend: (question: string) => void;
   onAboutClick?: () => void;
+  onSourcesClick?: () => void;
   disabled?: boolean;
 }
 
@@ -56,6 +57,7 @@ export function WelcomeScreen({
   isLoadingCountries,
   onSend,
   onAboutClick,
+  onSourcesClick,
   disabled
 }: WelcomeScreenProps) {
 
@@ -137,12 +139,21 @@ export function WelcomeScreen({
               <ExternalLink className="h-3.5 w-3.5" />
             </a>
           </p>
-          <button
-            onClick={onAboutClick}
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            About & Disclaimers
-          </button>
+          <div className="flex items-center justify-center gap-3 text-sm text-muted-foreground">
+            <button
+              onClick={onAboutClick}
+              className="hover:text-foreground transition-colors"
+            >
+              About
+            </button>
+            <span>|</span>
+            <button
+              onClick={onSourcesClick}
+              className="hover:text-foreground transition-colors"
+            >
+              Sources
+            </button>
+          </div>
         </div>
       </div>
     </div>
